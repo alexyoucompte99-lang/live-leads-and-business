@@ -1,0 +1,172 @@
+---
+/*
+ * Compte à rebours jours / heures / minutes / secondes, repris de la LP
+ * Free Formation et relu dans la DA de la page : chiffres en Instrument
+ * Serif, unités en Geist Mono, panneau vert sombre. Piloté par
+ * LIVE.DATE_ISO ; passe en « En direct » une fois l'heure atteinte.
+ */
+import { LIVE } from '../config/live';
+
+interface Props {
+	/** Classe(s) additionnelle(s), ex. « apparait d4 » dans le hero. */
+	class?: string;
+}
+const { class: classe = '' } = Astro.props;
+---
+
+<div class:list={['compte-a-rebours', classe]} data-compte-a-rebours data-cible={LIVE.DATE_ISO} aria-live="polite">
+	<p class="cr-label">Le live commence dans</p>
+	<div class="cr-cases">
+		<div class="cr-case"><b data-unite="jours">00</b><span>Jours</span></div>
+		<i class="cr-sep" aria-hidden="true">:</i>
+		<div class="cr-case"><b data-unite="heures">00</b><span>Heures</span></div>
+		<i class="cr-sep" aria-hidden="true">:</i>
+		<div class="cr-case"><b data-unite="minutes">00</b><span>Min</span></div>
+		<i class="cr-sep" aria-hidden="true">:</i>
+		<div class="cr-case"><b data-unite="secondes">00</b><span>Sec</span></div>
+	</div>
+	<p class="cr-direct"><span class="point" aria-hidden="true"></span>En direct maintenant</p>
+</div>
+
+<style>
+	.compte-a-rebours {
+		display: inline-block;
+		margin: 0 auto 30px;
+		padding: 16px 26px 14px;
+		background: rgba(15, 22, 8, 0.86);
+		backdrop-filter: blur(6px);
+		border: 1px solid var(--vert-bord);
+		border-radius: 20px;
+		box-shadow: 0 0 0 1px rgba(166, 255, 77, 0.04), 0 20px 50px rgba(0, 0, 0, 0.35);
+	}
+	.cr-label {
+		font-family: var(--mono);
+		font-size: 10.5px;
+		font-weight: 500;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--muet);
+		margin-bottom: 8px;
+	}
+	.cr-cases {
+		display: flex;
+		align-items: baseline;
+		justify-content: center;
+		gap: 10px;
+	}
+	.cr-case {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		min-width: 58px;
+	}
+	.cr-case b {
+		font-family: var(--display);
+		font-weight: 400;
+		font-size: 42px;
+		line-height: 1;
+		color: var(--creme);
+		font-variant-numeric: tabular-nums;
+		letter-spacing: -0.01em;
+	}
+	.cr-case span {
+		margin-top: 6px;
+		font-family: var(--mono);
+		font-size: 9.5px;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--muet-2);
+	}
+	.cr-sep {
+		font-family: var(--display);
+		font-style: normal;
+		font-size: 30px;
+		line-height: 1;
+		color: var(--vert);
+		opacity: 0.7;
+		transform: translateY(-4px);
+		animation: bat 1s steps(2, start) infinite;
+	}
+	@keyframes bat { to { opacity: 0.25; } }
+	.cr-case b.tic { animation: tic 0.45s var(--doux); }
+	@keyframes tic {
+		from { transform: translateY(-5px); opacity: 0.35; }
+		to { transform: translateY(0); opacity: 1; }
+	}
+
+	.cr-direct {
+		display: none;
+		align-items: center;
+		gap: 10px;
+		font-family: var(--mono);
+		font-size: 12px;
+		font-weight: 500;
+		letter-spacing: 0.2em;
+		text-transform: uppercase;
+		color: var(--vert);
+	}
+	.cr-direct .point {
+		width: 8px; height: 8px;
+		border-radius: 50%;
+		background: var(--vert);
+		box-shadow: 0 0 8px rgba(166, 255, 77, 0.9);
+		animation: clignote 1.8s ease-in-out infinite;
+	}
+	.compte-a-rebours.direct .cr-label,
+	.compte-a-rebours.direct .cr-cases { display: none; }
+	.compte-a-rebours.direct .cr-direct { display: inline-flex; }
+
+	@media (max-width: 430px) {
+		.compte-a-rebours { padding: 13px 16px 12px; border-radius: 16px; }
+		.cr-cases { gap: 6px; }
+		.cr-case { min-width: 46px; }
+		.cr-case b { font-size: 32px; }
+		.cr-sep { font-size: 22px; }
+	}
+	@media (prefers-reduced-motion: reduce) {
+		.cr-sep, .cr-case b.tic { animation: none; }
+	}
+</style>
+
+<script>
+	import { mouvementReduit } from '../scripts/etat';
+
+	document.querySelectorAll<HTMLElement>('[data-compte-a-rebours]').forEach((bloc) => {
+		const cible = new Date(bloc.dataset.cible || '').getTime();
+		if (isNaN(cible)) { bloc.remove(); return; }
+
+		const cases = {
+			jours: bloc.querySelector<HTMLElement>('[data-unite="jours"]')!,
+			heures: bloc.querySelector<HTMLElement>('[data-unite="heures"]')!,
+			minutes: bloc.querySelector<HTMLElement>('[data-unite="minutes"]')!,
+			secondes: bloc.querySelector<HTMLElement>('[data-unite="secondes"]')!
+		};
+
+		function poser(el: HTMLElement, valeur: number) {
+			const texte = String(valeur).padStart(2, '0');
+			if (el.textContent === texte) return;
+			el.textContent = texte;
+			if (!mouvementReduit) {
+				el.classList.remove('tic');
+				void el.offsetWidth;
+				el.classList.add('tic');
+			}
+		}
+
+		function afficher() {
+			const restant = cible - Date.now();
+			if (restant <= 0) {
+				bloc.classList.add('direct');
+				clearInterval(minuteur);
+				return;
+			}
+			poser(cases.jours, Math.floor(restant / 86400000));
+			poser(cases.heures, Math.floor((restant % 86400000) / 3600000));
+			poser(cases.minutes, Math.floor((restant % 3600000) / 60000));
+			poser(cases.secondes, Math.floor((restant % 60000) / 1000));
+		}
+
+		const minuteur = setInterval(afficher, 1000);
+		afficher();
+	});
+</script>

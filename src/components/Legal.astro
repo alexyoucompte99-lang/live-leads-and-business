@@ -1,0 +1,101 @@
+---
+/*
+ * Mentions légales et politique de confidentialité, dans une modale.
+ * Les passages surlignés en jaune sont à compléter avant toute diffusion
+ * publique : cherche « aremplir » dans ce fichier.
+ */
+---
+
+<div class="modale" id="modale-legal" role="dialog" aria-modal="true" aria-labelledby="titre-legal" hidden>
+	<div class="modale-panneau">
+		<button class="modale-fermer" id="fermer-legal" type="button" aria-label="Fermer">&times;</button>
+
+		<h2 id="titre-legal">Mentions légales</h2>
+
+		<h3>Éditeur</h3>
+		<p>
+			Leads and Business · Lucas Fabre<br />
+			<span class="aremplir">forme juridique et capital</span><br />
+			<span class="aremplir">adresse du siège</span><br />
+			<span class="aremplir">SIRET · RCS · TVA intracommunautaire</span>
+		</p>
+		<p>Contact : <span class="aremplir">adresse e-mail de contact</span></p>
+		<p>Directeur de la publication : Lucas Fabre</p>
+
+		<h3>Hébergement</h3>
+		<p>Cette page est hébergée par Vercel Inc., 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis.</p>
+
+		<h3>Propriété intellectuelle</h3>
+		<p>L'ensemble des contenus de cette page (textes, identité visuelle, logo Leads and Business, description de la méthode) est protégé par le droit d'auteur. Toute reproduction ou réutilisation, totale ou partielle, sans autorisation écrite préalable est interdite.</p>
+
+		<h2 style="margin-top:38px;">Politique de confidentialité</h2>
+
+		<h3>Qui traite tes données</h3>
+		<p>Lucas Fabre (Leads and Business), responsable de traitement, joignable à <span class="aremplir">adresse e-mail de contact</span>.</p>
+
+		<h3>Ce qu'on collecte, et pourquoi</h3>
+		<ul>
+			<li><strong>Ton prénom, ton e-mail et ton numéro de téléphone</strong> : pour t'inscrire au live, t'envoyer le lien de connexion et les rappels sur WhatsApp et par e-mail, et te proposer le groupe WhatsApp des participants.</li>
+			<li><strong>Si tu candidates au coaching en direct</strong> : ta situation, la description de ton activité, le problème que tu veux travailler, ce que tu as déjà essayé, ce que tu attends du coaching, ton chiffre d'affaires mensuel si tu le donnes, ton accord pour être coaché devant les autres participants et, si tu la donnes, ton autorisation d'enregistrement : pour permettre à Lucas de sélectionner les cas de la session et de préparer le coaching.</li>
+		</ul>
+		<p>Rien d'autre n'est collecté. Aucun profilage, aucune décision automatisée.</p>
+
+		<h3>Sur quelle base</h3>
+		<p>Ton consentement, donné en remplissant volontairement le formulaire. Tu peux le retirer à tout moment, sans avoir à te justifier : il suffit d'écrire à l'adresse de contact.</p>
+
+		<h3>Où vont ces informations</h3>
+		<p>Elles sont enregistrées dans un tableur Google Sheets privé, accessible uniquement à Lucas et à son équipe. L'hébergement est assuré par Google Ireland Limited ; des transferts hors Union européenne sont possibles, encadrés par les clauses contractuelles types de la Commission européenne.</p>
+		<p><strong>Tes données ne sont ni vendues, ni louées, ni transmises à des tiers</strong> à des fins commerciales ou publicitaires.</p>
+
+		<h3>Groupe WhatsApp</h3>
+		<p>Rejoindre le groupe des participants est facultatif. En le rejoignant, ton numéro et ton nom WhatsApp deviennent visibles des autres membres, conformément au fonctionnement de WhatsApp (Meta Platforms Ireland Ltd). Tu peux le quitter à tout moment.</p>
+
+		<h3>Enregistrement du live</h3>
+		<p>Le coaching en direct est suivi en temps réel par les autres participants et peut être enregistré. Seules les personnes qui ont coché l'autorisation correspondante peuvent apparaître dans un extrait diffusé, et les informations sensibles de leur activité y sont anonymisées. Les autres participants ne sont ni filmés ni cités.</p>
+
+		<h3>Combien de temps</h3>
+		<p>Elles sont conservées 24 mois après notre dernier échange, puis supprimées. Si tu demandes leur suppression, elle est effectuée sous 30 jours.</p>
+
+		<h3>Cookies et mesure d'audience</h3>
+		<p id="texte-cookies">Cette page <strong>ne dépose aucun cookie</strong> et n'utilise aucun outil de mesure d'audience, de publicité ou de suivi comportemental. Ta visite n'est pas tracée. C'est pour cette raison qu'aucune bannière de consentement ne t'est demandée.</p>
+
+		<h3>Tes droits</h3>
+		<p>Tu disposes d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité sur tes données. Écris à <span class="aremplir">adresse e-mail de contact</span> : tu recevras une réponse sous un mois.</p>
+		<p>Si la réponse ne te convient pas, tu peux saisir la CNIL : <a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>, 3 place de Fontenoy, 75007 Paris.</p>
+
+		<p class="maj">Dernière mise à jour : 10 septembre 2026.</p>
+	</div>
+</div>
+
+<script>
+	import { $ } from '../scripts/etat';
+
+	const modale = $('modale-legal');
+	const fermer = $('fermer-legal');
+	let declencheur: HTMLElement | null = null;
+
+	function refermer() {
+		modale.hidden = true;
+		document.body.style.overflow = document.querySelector('.modale:not([hidden])') ? 'hidden' : '';
+		declencheur?.focus();
+	}
+
+	// Délégué : les liens « data-ouvre-legal » existent aussi dans la popup
+	// de sortie et la bannière de consentement, créée plus tard.
+	document.addEventListener('click', (e) => {
+		const lien = (e.target as HTMLElement).closest<HTMLElement>('[data-ouvre-legal]');
+		if (!lien) return;
+		e.preventDefault();
+		declencheur = lien;
+		modale.hidden = false;
+		document.body.style.overflow = 'hidden';
+		fermer.focus();
+	});
+	fermer.addEventListener('click', refermer);
+	modale.addEventListener('click', (e) => {
+		if (e.target === modale) refermer();
+	});
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && !modale.hidden) refermer();
+	});
+</script>

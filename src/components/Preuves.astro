@@ -1,0 +1,65 @@
+---
+/*
+ * Preuves. Les chiffres (200+, 2,3 M€, 96 %) viennent de la LP précédente :
+ * ne garder que ceux dont la source, la période et le calcul sont
+ * explicables. Les témoignages sont ceux d'indépendants et de fondateurs
+ * de studio ; ils sont présentés comme tels, pas comme des transitions
+ * vers une agence.
+ */
+import { TEMOIGNAGES } from '../config/live';
+---
+
+<section class="section preuves" aria-label="Ils sont passés par là">
+	<div class="courbe" aria-hidden="true">
+		<svg viewBox="0 0 200 70" width="200" height="70" xmlns="http://www.w3.org/2000/svg">
+			<path pathLength="100" d="M4 54 L28 34 L50 58 L72 38 L94 50 L116 26 L138 32 L160 14 L196 8"></path>
+			<circle cx="196" cy="8" r="3"></circle>
+		</svg>
+	</div>
+
+	<div class="titre-section centre reveal">
+		<span class="trait"></span>
+		<h2 data-lettres>Ils sont passés par là</h2>
+		<span class="trait"></span>
+	</div>
+
+	<blockquote class="citation reveal">« Mieux me positionner, mettre en place une prospection continue, communiquer de manière plus impactante. <em>Et ce n'est qu'un aperçu.</em> »</blockquote>
+	<p class="citation-source reveal">Matthieu, développeur React / Next.js · <b>+160 K€ en 2025</b></p>
+
+	<div class="chiffres reveal">
+		<div><b>200+</b><span>indépendants et dirigeants accompagnés</span></div>
+		<div><b>2,3 M€</b><span>de CA générés par les élèves</span></div>
+		<div><b>96 %</b><span>de satisfaction</span></div>
+	</div>
+
+	{
+		TEMOIGNAGES.length > 0 && (
+			<div class:list={['videos', 'reveal', { multi: TEMOIGNAGES.length > 1 }]} id="videos-temoignages">
+				{TEMOIGNAGES.map((t) => (
+					<figure class="video">
+						<video controls preload="none" playsinline src={t.url} poster={t.poster} aria-label={'Témoignage de ' + t.prenom} />
+						<figcaption>
+							<b>{t.prenom}</b>
+							<span>{t.role}</span>
+							<em>{t.resultat}</em>
+						</figcaption>
+					</figure>
+				))}
+			</div>
+		)
+	}
+</section>
+
+<script>
+	// Une seule vidéo à la fois : quand l'une démarre, les autres se taisent
+	const conteneur = document.getElementById('videos-temoignages');
+	conteneur?.addEventListener(
+		'play',
+		(e) => {
+			conteneur.querySelectorAll('video').forEach((v) => {
+				if (v !== e.target) v.pause();
+			});
+		},
+		true
+	);
+</script>

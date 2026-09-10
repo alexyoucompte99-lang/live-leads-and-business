@@ -1,0 +1,30 @@
+---
+/*
+ * « Et après le live ». L'ancienne offre (90 jours, 6 sprints, 1:1
+ * illimité, garantie) a été retirée : ce bloc garde une suite commerciale
+ * sans vendre prématurément un accompagnement qui n'est plus celui-là.
+ */
+import { LIVE } from '../config/live';
+---
+
+<section class="section" aria-label="Et après le live">
+	<div class="titre-section reveal">
+		<h2 data-lettres>Et après le live ?</h2>
+		<span class="trait"></span>
+	</div>
+
+	<div class="mentorat reveal">
+		<ul>
+			<li><strong>Leads and Business accompagne les dirigeants d'agence et les entrepreneurs</strong> qui veulent structurer ou développer leur activité : acquisition, offre, vente, cadrage des missions, organisation de l'équipe.</li>
+			<li><strong>Si tu souhaites approfondir ta situation,</strong> tu pourras échanger avec l'équipe pour voir si l'accompagnement correspond à ton besoin.</li>
+			<li><strong>Participer au live ne t'engage à rien.</strong> Tu viens, tu regardes, tu prends ce qui s'applique à toi.</li>
+		</ul>
+		{
+			LIVE.APPEL_URL && (
+				<p class="voir">
+					<a class="lien-agenda" href={LIVE.APPEL_URL} target="_blank" rel="noopener">Échanger avec l'équipe</a>
+				</p>
+			)
+		}
+	</div>
+</section>

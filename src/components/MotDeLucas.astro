@@ -1,0 +1,23 @@
+<section class="section" aria-label="Le mot de Lucas">
+	<div class="mot reveal inclinable">
+		<div class="portrait">
+			<img id="photo-lucas" src="/assets/lucas.jpg" alt="Lucas Fabre, fondateur de Leads and Business" />
+			<span class="initiale" id="initiale-lucas" aria-hidden="true" style="display:none;">L</span>
+		</div>
+		<div>
+			<p>« Je suis indépendant depuis 14 ans. J'ai connu les mois à zéro et les mois où je refusais des missions. Ce que j'ai fini par comprendre, c'est que le problème n'est presque jamais la compétence. C'est tout ce qu'il y a autour : à qui tu t'adresses, comment tu te montres, comment tu vends, comment tu cadres ce que tu livres.</p>
+			<p>Ce live, c'est ça. Chaque semaine, des dirigeants d'agence et des entrepreneurs, leur vrai problème, et on le travaille devant toi. Sans slides, sans discours. Ce que tu vois, tu peux le tester dès le lendemain. »</p>
+			<p class="signature">Lucas</p>
+			<p class="qui">Fondateur de Leads and Business</p>
+		</div>
+	</div>
+</section>
+
+<script>
+	const photo = document.getElementById('photo-lucas') as HTMLImageElement;
+	const initiale = document.getElementById('initiale-lucas') as HTMLElement;
+	photo.addEventListener('error', () => {
+		photo.style.display = 'none';
+		initiale.style.display = 'grid';
+	});
+</script>

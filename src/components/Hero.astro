@@ -1,0 +1,71 @@
+---
+import { LIVE } from '../config/live';
+import Countdown from './Countdown.astro';
+---
+
+<header id="hero">
+	<div class="globe" id="souffle" aria-hidden="true">
+		<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+			<defs>
+				<radialGradient id="halo-vert" cx="50%" cy="50%" r="50%">
+					<stop offset="0%" stop-color="#a6ff4d" stop-opacity="0.10"></stop>
+					<stop offset="55%" stop-color="#a6ff4d" stop-opacity="0.04"></stop>
+					<stop offset="100%" stop-color="#a6ff4d" stop-opacity="0"></stop>
+				</radialGradient>
+			</defs>
+			<circle class="halo-globe" cx="120" cy="120" r="118"></circle>
+			<circle class="contour" cx="120" cy="120" r="100"></circle>
+			<ellipse class="lat" cx="120" cy="120" rx="100" ry="34"></ellipse>
+			<ellipse class="lat" cx="120" cy="120" rx="100" ry="70"></ellipse>
+			<ellipse class="mer m1" cx="120" cy="120" rx="100" ry="100"></ellipse>
+			<ellipse class="mer m2" cx="120" cy="120" rx="100" ry="100"></ellipse>
+			<ellipse class="mer m3" cx="120" cy="120" rx="100" ry="100"></ellipse>
+		</svg>
+	</div>
+
+	<div class="onde" aria-hidden="true"><i></i><i></i><i></i></div>
+
+	<div class="marque">
+		<img id="logo-lnb" src="/assets/logo.png" alt="Leads and Business" />
+		<span class="marque-nom">Leads <em>and</em> Business</span>
+	</div>
+
+	<div class="badge-date apparait d2">
+		<span class="point"></span>
+		<span>Coaching gratuit · {LIVE.DATE} · {LIVE.HEURE}</span>
+	</div>
+
+	<h1>
+		<span class="ligne"><span>Un blocage</span></span>
+		<span class="ligne"><span>dans ton business ?</span></span>
+		<span class="ligne"><span><em>Propose ton cas pour</em></span></span>
+		<span class="ligne"><span><em>un coaching en direct.</em></span></span>
+	</h1>
+
+	<p class="sous-titre apparait d3">Tu diriges une agence ou tu veux en développer une ? Présente ta situation : trouver des clients, mieux vendre ton offre, cadrer tes missions ou organiser ton équipe. Lucas sélectionne quelques cas et travaille avec les participants en direct pour comprendre ce qui bloque et identifier les prochaines actions à tester.</p>
+	<p class="animatrice apparait d4">Animé par <strong>Lucas Fabre</strong>, fondateur de Leads and Business. Indépendant depuis 14 ans, 200+ indépendants et dirigeants accompagnés.</p>
+	<Countdown class="apparait d4" />
+
+	<div class="cta-duo apparait d5">
+		<a href="#inscription" class="cta cta-hero" data-magnetique data-mode="coaching">Proposer mon cas</a>
+		<a href="#inscription" class="cta secondaire-btn" data-mode="assister">Assister au live</a>
+	</div>
+	<p class="rassurance apparait d5">Gratuit et en ligne. Les cas sont sélectionnés en amont : l'inscription ne garantit pas un passage en coaching.</p>
+</header>
+
+<style is:global>
+	.cta-duo {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		gap: 14px;
+		margin-bottom: 18px;
+	}
+	.cta-duo .cta-hero { margin: 0; }
+	.cta-duo .secondaire-btn { padding: 18px 28px; }
+	@media (max-width: 480px) {
+		.cta-duo { flex-direction: column; }
+		.cta-duo .cta { width: 100%; text-align: center; }
+	}
+</style>

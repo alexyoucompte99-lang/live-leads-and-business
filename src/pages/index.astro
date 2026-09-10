@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import PourQui from '../components/PourQui.astro';
+import Deroule from '../components/Deroule.astro';
+import MotDeLucas from '../components/MotDeLucas.astro';
+import Preuves from '../components/Preuves.astro';
+import EtApres from '../components/EtApres.astro';
+import Inscription from '../components/Inscription.astro';
+import BarreCta from '../components/BarreCta.astro';
+import ExitPopup from '../components/ExitPopup.astro';
+import Legal from '../components/Legal.astro';
+import { LIVE, QUAND } from '../config/live';
+
+export const prerender = false;
+
+const titre = 'Coaching business en direct, gratuit · Leads and Business';
+const description =
+	"Chaque semaine, Lucas Fabre coache en direct des dirigeants d'agence et des entrepreneurs sur le vrai blocage de leur activité. " +
+	QUAND.charAt(0).toUpperCase() + QUAND.slice(1) + ', gratuit, en ligne. Propose ton cas ou viens assister.';
+---
+
+<BaseLayout title={titre} description={description}>
+	<div class="page">
+		<div class="fil" id="fil" aria-hidden="true"></div>
+
+		<div class="rail">
+			<span class="rail-gauche">
+				<img class="marque-mini" src="/assets/logo.png" alt="" aria-hidden="true" />
+				<span>Leads and Business</span>
+			</span>
+			<span class="rail-droite">{LIVE.DATE_COURTE}</span>
+		</div>
+
+		<Hero />
+		<PourQui />
+		<Deroule />
+		<MotDeLucas />
+		<Preuves />
+		<EtApres />
+		<Inscription />
+
+		<footer>
+			<img class="marque-pied" src="/assets/logo.png" alt="" aria-hidden="true" />
+			<p>Leads and Business · Le coaching business en direct, chaque semaine en ligne</p>
+			<p><a href="#" id="lien-mentions" data-ouvre-legal>Mentions légales et confidentialité</a></p>
+			<p class="devise">Des clients chaque mois, sans dépendre du bouche-à-oreille</p>
+		</footer>
+	</div>
+
+	<BarreCta />
+	<ExitPopup />
+	<Legal />
+</BaseLayout>
+
+<script>
+	import '../scripts/motion';
+	import '../scripts/mesure';
+</script>

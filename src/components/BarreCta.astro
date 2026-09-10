@@ -1,0 +1,45 @@
+---
+import { LIVE } from '../config/live';
+---
+
+<div class="barre" id="barre">
+	<div class="info">
+		<span>{LIVE.DATE_COURTE}</span>
+		<small id="barre-compte">Gratuit, en ligne</small>
+	</div>
+	<a href="#inscription" class="cta" data-magnetique data-mode="coaching">Proposer mon cas</a>
+</div>
+
+<script>
+	import { LIVE } from '../config/live';
+	import { $, mouvementReduit } from '../scripts/etat';
+
+	/* ---------- Compte à rebours court dans la barre ---------- */
+	const ligne = $('barre-compte');
+	const cible = new Date(LIVE.DATE_ISO);
+	let precedent = '';
+
+	function afficher() {
+		const restant = cible.getTime() - Date.now();
+		if (restant <= 0) {
+			ligne.textContent = "C'est maintenant";
+			return;
+		}
+		const jours = Math.floor(restant / 86400000);
+		const heures = Math.floor((restant % 86400000) / 3600000);
+		const minutes = Math.floor((restant % 3600000) / 60000);
+		const texte = jours > 0 ? 'Dans ' + jours + ' jour' + (jours > 1 ? 's' : '') : 'Dans ' + heures + ' h ' + String(minutes).padStart(2, '0');
+		if (texte === precedent) return;
+		precedent = texte;
+		ligne.innerHTML = '<span class="bascule">' + texte + '</span>';
+		if (!mouvementReduit) {
+			const b = ligne.firstChild as HTMLElement;
+			b.classList.add('change');
+			b.addEventListener('animationend', () => b.classList.remove('change'), { once: true });
+		}
+	}
+	if (!isNaN(cible.getTime())) {
+		afficher();
+		setInterval(afficher, 30000);
+	}
+</script>

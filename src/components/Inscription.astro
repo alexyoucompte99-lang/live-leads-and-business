@@ -1,0 +1,393 @@
+---
+/*
+ * Le flow d'inscription en trois écrans : coordonnées et choix du mode,
+ * candidature au coaching (si choisie), confirmation avec l'étape WhatsApp.
+ */
+import { LIVE, QUAND } from '../config/live';
+import WhatsAppCard from './WhatsAppCard.astro';
+---
+
+<div class="carte reveal" id="inscription">
+	<div class="progression" id="progression" aria-hidden="true">
+		<i class="active"></i><i></i><i></i>
+	</div>
+
+	<!-- ÉTAPE 1 : coordonnées + mode -->
+	<section class="flow-etape visible" id="etape-optin" aria-label="Inscription au live">
+		<h2>Réserve <em>ta place</em></h2>
+		<p class="intro">C'est gratuit, et ça se vit en direct : <strong>{QUAND}</strong>, heure de Paris.</p>
+
+		<div class="champ" id="champ-prenom">
+			<label class="etiquette" for="prenom">Ton prénom</label>
+			<div class="boite"><input type="text" id="prenom" name="prenom" autocomplete="given-name" placeholder="Prénom" /></div>
+			<p class="erreur">Il nous faut ton prénom.</p>
+		</div>
+
+		<div class="champ" id="champ-email">
+			<label class="etiquette" for="email">Ton e-mail</label>
+			<div class="boite"><input type="email" id="email" name="email" autocomplete="email" placeholder="prenom@exemple.com" /></div>
+			<p class="erreur">Cet e-mail ne semble pas valide.</p>
+		</div>
+
+		<div class="champ" id="champ-tel">
+			<label class="etiquette" for="tel">Ton numéro de téléphone</label>
+			<div class="boite"><input type="tel" id="tel" name="tel" autocomplete="tel" placeholder="06 12 34 56 78" /></div>
+			<p class="aide">Numéro utilisé sur WhatsApp. Nous y enverrons le lien et le rappel du live.</p>
+			<p class="erreur">Ce numéro ne semble pas valide.</p>
+		</div>
+
+		<div class="champ" id="champ-mode">
+			<label class="etiquette">Comment tu veux participer ?</label>
+			<div class="choix-groupe" role="radiogroup">
+				<label class="choix">
+					<input type="radio" name="mode" value="assister" />
+					<span class="txt">J'assiste aux coachings en direct</span>
+				</label>
+				<label class="choix">
+					<input type="radio" name="mode" value="coaching" />
+					<span class="txt">Je candidate pour être coaché en direct
+						<small>Présente ton activité et ton problème. Lucas sélectionne quelques cas parmi les candidatures, réponse au plus tard {LIVE.REPONSE_AVANT}.</small>
+					</span>
+				</label>
+			</div>
+			<p class="erreur">Choisis l'une des deux options.</p>
+		</div>
+
+		<button class="cta bouton" id="btn-optin" type="button" data-libelle-assister="M'inscrire au live" data-libelle-coaching="Continuer vers ma candidature">M'inscrire au live</button>
+		<p class="erreur-envoi" id="erreur-optin" hidden>L'enregistrement n'a pas fonctionné. Vérifie ta connexion et réessaie ; si ça persiste, écris-nous.</p>
+		<p class="mention-rgpd">En validant, tu acceptes que Leads and Business utilise ces informations pour t'envoyer le lien du live et les rappels. Tu peux demander leur suppression à tout moment. <a href="#" data-ouvre-legal>Politique de confidentialité</a>.</p>
+	</section>
+
+	<!-- ÉTAPE 2 : candidature au coaching -->
+	<section class="flow-etape" id="etape-candidature" aria-label="Candidature au coaching en direct">
+		<h2>Sur quoi veux-tu <em>être coaché</em> ?</h2>
+		<p class="intro">Décris ton activité, ton problème principal et ce que tu as déjà essayé. Ces réponses nous servent à sélectionner les cas et à préparer le coaching. Quelques phrases concrètes suffisent. Ne partage aucune information confidentielle.</p>
+
+		<div class="champ" id="champ-profil">
+			<label class="etiquette" for="profil">Quelle situation te correspond aujourd'hui ?</label>
+			<div class="boite">
+				<select id="profil" name="profil">
+					<option value="" selected disabled>Choisis ce qui te décrit le mieux</option>
+					<option>Je travaille en solo et je veux structurer mon activité</option>
+					<option>Je travaille en solo et je veux développer une agence</option>
+					<option>Je dirige déjà une agence ou un studio</option>
+					<option>Je développe une autre activité</option>
+				</select>
+			</div>
+			<p class="erreur">Choisis une réponse.</p>
+		</div>
+
+		<div class="champ" id="champ-business">
+			<label class="etiquette" for="business">Que vends-tu, à qui, et comment travailles-tu aujourd'hui ? <small>Précise ton offre et si tu travailles seul, avec des partenaires ou avec une équipe.</small></label>
+			<div class="boite"><textarea id="business" name="business" placeholder="Ex. : studio de 3 personnes, sites et branding pour des PME, 2 clients réguliers, le reste par bouche-à-oreille."></textarea></div>
+			<p class="erreur">Décris ton activité en une ou deux phrases.</p>
+		</div>
+
+		<div class="champ" id="champ-blocage1">
+			<label class="etiquette" for="blocage1">Quel problème veux-tu travailler pendant le live ? <small>Raconte une situation récente : ce qui s'est passé, ce qui bloque et les conséquences pour ton activité.</small></label>
+			<div class="boite"><textarea id="blocage1" name="blocage1" placeholder="Ex. : trois devis envoyés le mois dernier, aucun signé, et je ne sais pas si c'est le prix, l'offre ou la façon de la présenter."></textarea></div>
+			<p class="erreur">Dis-nous ce qui coince, avec une situation concrète.</p>
+		</div>
+
+		<div class="champ" id="champ-blocage2">
+			<label class="etiquette" for="blocage2">Qu'as-tu déjà essayé pour résoudre ce problème ? <small>Qu'as-tu fait et qu'est-ce que cela a changé ? Si tu n'as encore rien essayé, indique-le simplement.</small></label>
+			<div class="boite"><textarea id="blocage2" name="blocage2" placeholder="Ex. : baissé mes prix une fois, ça n'a rien changé. Relancé par e-mail, sans réponse."></textarea></div>
+			<p class="erreur">Même « rien pour l'instant » nous aide.</p>
+		</div>
+
+		<div class="champ" id="champ-objectif">
+			<label class="etiquette" for="objectif">À la fin du coaching, qu'aimerais-tu avoir clarifié ou décidé ? <small>Par exemple : quelle offre mettre en avant, comment cadrer une mission ou quoi déléguer en premier.</small></label>
+			<div class="boite"><textarea id="objectif" name="objectif" placeholder="Ex. : savoir quelle offre mettre en avant et à quel prix pour les trois prochains mois."></textarea></div>
+			<p class="erreur">Une phrase sur ce que tu attends du coaching.</p>
+		</div>
+
+		<div class="champ" id="champ-ca">
+			<label class="etiquette" for="ca">Ton CA mensuel moyen HT sur les trois derniers mois <small>Facultatif. Indique 0 si tu démarres.</small></label>
+			<div class="boite"><input type="text" id="ca" name="ca" inputmode="decimal" placeholder="Ex. : 12 000 €" /></div>
+		</div>
+
+		<div class="champ" id="champ-accord">
+			<label class="consentement">
+				<input type="checkbox" id="accord" name="accord" />
+				<span>Je suis d'accord pour être coaché en direct, devant les autres participants. Ce que je dis pendant le live est entendu par eux.</span>
+			</label>
+			<label class="consentement">
+				<input type="checkbox" id="droits" name="droits" />
+				<span>J'autorise Leads and Business à enregistrer mon image, ma voix et mon intervention, et à en utiliser des extraits pour présenter ses coachings sur son site, ses réseaux et ses publicités.
+					<small>Facultatif. Les informations sensibles de ton activité (noms de clients, coordonnées, données financières détaillées) sont anonymisées dans tout extrait diffusé. Ne partage aucun mot de passe ni donnée confidentielle de tiers.</small>
+				</span>
+			</label>
+			<p class="erreur">La première case est nécessaire pour candidater.</p>
+		</div>
+
+		<button class="cta bouton" id="btn-candidature" type="button">Envoyer ma candidature au coaching</button>
+		<p class="erreur-envoi" id="erreur-candidature" hidden>L'envoi n'a pas fonctionné. Ta place au live est bien réservée ; réessaie l'envoi de ta candidature dans un instant.</p>
+		<p class="mention-rgpd">Le passage en direct n'est pas garanti : Lucas sélectionne quelques cas parmi les candidatures. Tu recevras une réponse au plus tard {LIVE.REPONSE_AVANT}.</p>
+	</section>
+
+	<!-- ÉTAPE 3 : confirmation -->
+	<section class="flow-etape" id="etape-fin" aria-label="Confirmation">
+		<div class="sceau" aria-hidden="true">
+			<svg viewBox="0 0 64 64" width="54" height="54" xmlns="http://www.w3.org/2000/svg">
+				<circle pathLength="100" cx="32" cy="32" r="28"></circle>
+				<path pathLength="100" d="M21 33 L29 41 L44 25"></path>
+			</svg>
+		</div>
+		<h2 class="confirmation-titre">C'est noté<span id="conf-prenom"></span></h2>
+		<p class="confirmation-texte" id="conf-texte"></p>
+
+		<WhatsAppCard />
+
+		{
+			LIVE.VISIO_URL ? (
+				<p class="conf-visio">Ton lien pour nous rejoindre {LIVE.JOUR} à {LIVE.HEURE}&#8239;:
+					<a href={LIVE.VISIO_URL} target="_blank" rel="noopener">{LIVE.VISIO_LABEL}</a></p>
+			) : (
+				<p class="conf-attente"><strong>Le lien du live arrive sur WhatsApp et par e-mail</strong> juste avant le début. Ajoute la session à ton agenda pour ne pas la rater.</p>
+			)
+		}
+
+		<div class="agenda" data-agenda>
+			<a class="lien-agenda" data-agenda-google target="_blank" rel="noopener">
+				<svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+					<rect x="3" y="5" width="18" height="16" rx="3"></rect>
+					<line x1="3" y1="10" x2="21" y2="10"></line>
+					<line x1="8" y1="3" x2="8" y2="7"></line>
+					<line x1="16" y1="3" x2="16" y2="7"></line>
+				</svg>
+				Ajouter à mon Google Agenda
+			</a>
+			<a class="secondaire" data-agenda-ics download="live-leads-and-business.ics">Apple Calendrier, Outlook : télécharger l'invitation</a>
+		</div>
+
+		{
+			LIVE.APPEL_URL && (
+				<>
+					<hr class="separateur" />
+					<div class="suite">
+						<h3>Et si tu souhaites être <em>accompagné</em> après le live ?</h3>
+						<p>Leads and Business accompagne les dirigeants d'agence et les entrepreneurs qui veulent structurer ou développer leur activité. Si tu veux approfondir ta situation, tu peux échanger avec l'équipe pour voir si l'accompagnement correspond à ton besoin. Participer au live ne t'engage à rien.</p>
+						<a class="cta secondaire-btn" href={LIVE.APPEL_URL} target="_blank" rel="noopener">Échanger avec l'équipe</a>
+					</div>
+				</>
+			)
+		}
+
+		<div class="rappel-final">
+			Rendez-vous <strong>{QUAND}</strong>, heure de Paris.<br />
+			Le rappel arrive sur WhatsApp juste avant le début.
+		</div>
+	</section>
+</div>
+
+<style is:global>
+	.erreur-envoi {
+		display: block;
+		margin-top: 14px;
+		padding: 12px 14px;
+		font-size: 13.5px;
+		line-height: 1.5;
+		color: var(--rouge);
+		background: rgba(255, 109, 112, 0.08);
+		border: 1px solid rgba(255, 109, 112, 0.35);
+		border-radius: 12px;
+	}
+	.erreur-envoi[hidden] { display: none; }
+</style>
+
+<script>
+	import { LIVE, QUAND, SESSION } from '../config/live';
+	import { $, donnees, envoyer, marquerErreur, marquerInscrit, mouvementReduit, emailValide, telValide } from '../scripts/etat';
+
+	/* ---------- Navigation dans le flow ---------- */
+	const RANG: Record<string, number> = { 'etape-optin': 0, 'etape-candidature': 1, 'etape-fin': 2 };
+
+	function montrer(idEtape: string) {
+		const sortante = document.querySelector('.flow-etape.visible');
+		const entrante = $(idEtape);
+
+		function entrer() {
+			document.querySelectorAll('.flow-etape').forEach((s) => s.classList.remove('visible', 'sort'));
+			entrante.classList.add('visible');
+			const rang = RANG[idEtape] || 0;
+			document.querySelectorAll('#progression i').forEach((p, i) => p.classList.toggle('active', i <= rang));
+			$('inscription').scrollIntoView({ behavior: mouvementReduit ? 'auto' : 'smooth', block: 'start' });
+		}
+
+		if (sortante && sortante !== entrante && !mouvementReduit) {
+			sortante.classList.remove('visible');
+			sortante.classList.add('sort');
+			setTimeout(entrer, 300);
+		} else {
+			entrer();
+		}
+	}
+
+	/* ---------- Choix du mode : style + libellé du bouton ---------- */
+	const btnOptin = $('btn-optin') as HTMLButtonElement;
+	const radios = document.querySelectorAll<HTMLInputElement>('.choix input[name="mode"]');
+
+	function appliquerMode() {
+		radios.forEach((r) => r.closest('.choix')!.classList.toggle('actif', r.checked));
+		const choisi = document.querySelector<HTMLInputElement>('input[name="mode"]:checked');
+		btnOptin.textContent = btnOptin.dataset['libelle' + (choisi?.value === 'coaching' ? 'Coaching' : 'Assister')] || '';
+	}
+	radios.forEach((r) => r.addEventListener('change', appliquerMode));
+
+	// Les CTA du hero présélectionnent le mode : « Proposer mon cas » vs « Assister ».
+	document.querySelectorAll<HTMLAnchorElement>('[data-mode]').forEach((lien) => {
+		lien.addEventListener('click', () => {
+			const radio = document.querySelector<HTMLInputElement>('input[name="mode"][value="' + lien.dataset.mode + '"]');
+			if (!radio) return;
+			radio.checked = true;
+			appliquerMode();
+		});
+	});
+
+	function texteConfirmation(coaching: boolean) {
+		return coaching
+			? 'Ta place est réservée pour ' + QUAND + ', et ta candidature est bien reçue. Lucas sélectionne quelques cas parmi les candidatures : tu recevras une réponse au plus tard ' + LIVE.REPONSE_AVANT + ', que ton cas soit retenu ou non.'
+			: 'Ta place est réservée pour ' + QUAND + '.';
+	}
+
+	/* ---------- Étape 1 ---------- */
+	btnOptin.addEventListener('click', async () => {
+		const prenom = ($('prenom') as HTMLInputElement).value.trim();
+		const email = ($('email') as HTMLInputElement).value.trim();
+		const tel = ($('tel') as HTMLInputElement).value.trim();
+		const mode = document.querySelector<HTMLInputElement>('input[name="mode"]:checked');
+
+		let ok = true;
+		ok = marquerErreur('champ-prenom', prenom.length < 2) && ok;
+		ok = marquerErreur('champ-email', !emailValide(email)) && ok;
+		ok = marquerErreur('champ-tel', !telValide(tel)) && ok;
+		ok = marquerErreur('champ-mode', !mode) && ok;
+		if (!ok || !mode) return;
+
+		donnees.prenom = prenom;
+		donnees.email = email;
+		donnees.tel = tel;
+		donnees.mode = mode.value;
+
+		const erreur = $('erreur-optin');
+		erreur.hidden = true;
+		btnOptin.disabled = true;
+		const enregistre = await envoyer('inscription');
+		btnOptin.disabled = false;
+		if (!enregistre) {
+			erreur.hidden = false;
+			return;
+		}
+
+		marquerInscrit();
+
+		if (mode.value === 'coaching') {
+			montrer('etape-candidature');
+		} else {
+			$('conf-prenom').textContent = ', ' + prenom;
+			$('conf-texte').textContent = texteConfirmation(false);
+			montrer('etape-fin');
+		}
+	});
+
+	/* ---------- Étape 2 : candidature ---------- */
+	const btnCandidature = $('btn-candidature') as HTMLButtonElement;
+	btnCandidature.addEventListener('click', async () => {
+		const valeur = (id: string) => ($(id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement).value.trim();
+		const profil = valeur('profil');
+		const business = valeur('business');
+		const blocage1 = valeur('blocage1');
+		const blocage2 = valeur('blocage2');
+		const objectif = valeur('objectif');
+		const ca = valeur('ca');
+		const accord = ($('accord') as HTMLInputElement).checked;
+		const droits = ($('droits') as HTMLInputElement).checked;
+
+		let ok = true;
+		ok = marquerErreur('champ-profil', !profil) && ok;
+		ok = marquerErreur('champ-business', business.length < 10) && ok;
+		ok = marquerErreur('champ-blocage1', blocage1.length < 10) && ok;
+		ok = marquerErreur('champ-blocage2', blocage2.length < 2) && ok;
+		ok = marquerErreur('champ-objectif', objectif.length < 5) && ok;
+		ok = marquerErreur('champ-accord', !accord) && ok;
+		if (!ok) return;
+
+		donnees.profil = profil;
+		donnees.business = business;
+		donnees.blocage1 = blocage1;
+		donnees.blocage2 = blocage2;
+		donnees.blocage3 = '';
+		donnees.objectif = objectif;
+		donnees.ca = ca;
+		donnees.accord = true;
+		donnees.droits = droits;
+
+		const erreur = $('erreur-candidature');
+		erreur.hidden = true;
+		btnCandidature.disabled = true;
+		const enregistre = await envoyer('candidature_live');
+		btnCandidature.disabled = false;
+		if (!enregistre) {
+			erreur.hidden = false;
+			return;
+		}
+
+		$('conf-prenom').textContent = ', ' + donnees.prenom;
+		$('conf-texte').textContent = texteConfirmation(true);
+		montrer('etape-fin');
+	});
+
+	/* ---------- Ajouter le live à son agenda ----------
+	   Les deux liens sont calculés depuis LIVE.DATE_ISO et LIVE.DUREE_MIN :
+	   il n'y a jamais de date écrite en dur à re-corriger quelque part. */
+	(function () {
+		const debut = new Date(LIVE.DATE_ISO);
+		if (isNaN(debut.getTime())) {
+			document.querySelectorAll('[data-agenda]').forEach((el) => el.remove());
+			return;
+		}
+		const fin = new Date(debut.getTime() + (LIVE.DUREE_MIN || 60) * 60000);
+
+		// Format attendu par Google et par le .ics : 20260915T150000Z
+		const utc = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+		const titre = LIVE.TITRE_AGENDA;
+		const details = LIVE.DETAILS_AGENDA + (LIVE.VISIO_URL ? '\n\nLien du live : ' + LIVE.VISIO_URL : '');
+		const lieu = LIVE.VISIO_URL || 'En ligne';
+
+		const google =
+			'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+			'&text=' + encodeURIComponent(titre) +
+			'&dates=' + utc(debut) + '/' + utc(fin) +
+			'&details=' + encodeURIComponent(details) +
+			'&location=' + encodeURIComponent(lieu) +
+			'&ctz=Europe/Paris';
+
+		// Le .ics veut des vraies fins de ligne CRLF, sinon Apple Calendrier refuse
+		const ics = [
+			'BEGIN:VCALENDAR',
+			'VERSION:2.0',
+			'PRODID:-//Leads and Business//Live//FR',
+			'CALSCALE:GREGORIAN',
+			'METHOD:PUBLISH',
+			'BEGIN:VEVENT',
+			'UID:live-' + SESSION + '@leads-and-business',
+			'DTSTAMP:' + utc(debut),
+			'DTSTART:' + utc(debut),
+			'DTEND:' + utc(fin),
+			'SUMMARY:' + titre,
+			'DESCRIPTION:' + details.replace(/\n/g, '\\n'),
+			'LOCATION:' + lieu,
+			'BEGIN:VALARM',
+			'TRIGGER:-PT30M',
+			'ACTION:DISPLAY',
+			'DESCRIPTION:' + titre,
+			'END:VALARM',
+			'END:VEVENT',
+			'END:VCALENDAR'
+		].join('\r\n');
+
+		document.querySelectorAll<HTMLAnchorElement>('[data-agenda-google]').forEach((a) => (a.href = google));
+		document.querySelectorAll<HTMLAnchorElement>('[data-agenda-ics]').forEach((a) => (a.href = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics)));
+	})();
+</script>

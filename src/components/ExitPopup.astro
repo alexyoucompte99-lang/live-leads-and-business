@@ -1,0 +1,227 @@
+---
+/*
+ * La popup de sortie, reprise de Free Formation : quand le visiteur quitte
+ * la page sans s'être inscrit, une dernière proposition courte.
+ *
+ * Déclencheurs :
+ *  - ordinateur : la souris sort de la fenêtre par le haut (barre d'onglets).
+ *  - mobile : remontée rapide vers le haut après avoir lu au moins un tiers
+ *    de la page (le geste qui précède la fermeture de l'onglet).
+ * Jamais avant 12 s de lecture, jamais pendant que le formulaire est à
+ * l'écran, jamais après une inscription, une seule fois par session.
+ */
+import { LIVE, QUAND } from '../config/live';
+import WhatsAppCard from './WhatsAppCard.astro';
+---
+
+<div class="modale sortie" id="popup-sortie" role="dialog" aria-modal="true" aria-labelledby="titre-sortie" hidden>
+	<div class="modale-panneau sortie-panneau">
+		<button class="modale-fermer" id="fermer-sortie" type="button" aria-label="Fermer">&times;</button>
+
+		<div class="sortie-formulaire" id="sortie-formulaire">
+			<p class="sortie-sur">Avant de partir</p>
+			<h2 id="titre-sortie">Ton blocage mérite <em>mieux</em> qu'un onglet fermé.</h2>
+			<p class="sortie-texte">{LIVE.DATE.charAt(0).toUpperCase() + LIVE.DATE.slice(1)} à {LIVE.HEURE}, Lucas coache en direct des dirigeants d'agence et des entrepreneurs sur ce qui freine vraiment leur activité. Tu peux venir juste pour regarder.</p>
+
+			<ul class="sortie-liste">
+				<li><span class="puce"></span>Des cas réels, pas de théorie : offre, vente, cadrage de mission, équipe.</li>
+				<li><span class="puce"></span>Le lien et le rappel arrivent sur WhatsApp, tu n'as rien à retenir.</li>
+				<li><span class="puce"></span>Le groupe WhatsApp des participants dès ton inscription.</li>
+			</ul>
+
+			<div class="champ" id="sortie-champ-prenom">
+				<div class="boite"><input type="text" id="sortie-prenom" autocomplete="given-name" placeholder="Ton prénom" /></div>
+				<p class="erreur">Il nous faut ton prénom.</p>
+			</div>
+			<div class="champ" id="sortie-champ-email">
+				<div class="boite"><input type="email" id="sortie-email" autocomplete="email" placeholder="Ton e-mail" /></div>
+				<p class="erreur">Cet e-mail ne semble pas valide.</p>
+			</div>
+			<div class="champ" id="sortie-champ-tel">
+				<div class="boite"><input type="tel" id="sortie-tel" autocomplete="tel" placeholder="Ton numéro WhatsApp" /></div>
+				<p class="erreur">Ce numéro ne semble pas valide.</p>
+			</div>
+
+			<button class="cta bouton" id="btn-sortie" type="button">Je réserve ma place gratuite</button>
+			<p class="erreur-envoi" id="erreur-sortie" hidden>L'enregistrement n'a pas fonctionné. Réessaie dans un instant.</p>
+			<p class="sortie-note">{QUAND} · Gratuit · En ligne. <a href="#" data-ouvre-legal>Confidentialité</a></p>
+		</div>
+
+		<div class="sortie-merci" id="sortie-merci" hidden>
+			<p class="sortie-sur">C'est noté</p>
+			<h2>Ta place est <em>réservée</em>.</h2>
+			<p class="sortie-texte">Rendez-vous {QUAND}, heure de Paris. Le lien arrive sur WhatsApp juste avant le début.</p>
+			<WhatsAppCard compact titre="Dernière étape : le groupe WhatsApp" texte="Le lien du live, le rappel et les échanges entre participants passent par là." />
+			<p class="sortie-note">Tu veux proposer ton cas pour être coaché en direct ? <a href="#inscription" id="sortie-vers-candidature">Candidater</a></p>
+		</div>
+	</div>
+</div>
+
+<style is:global>
+	.sortie { z-index: 95; }
+	.sortie-panneau { max-width: 520px; padding: 36px 30px 30px; text-align: center; }
+	.sortie-sur {
+		font-family: var(--mono);
+		font-size: 10.5px;
+		font-weight: 500;
+		letter-spacing: 0.22em;
+		text-transform: uppercase;
+		color: var(--vert);
+		margin-bottom: 12px;
+	}
+	.sortie-panneau h2 {
+		font-family: var(--display);
+		font-weight: 400;
+		font-size: clamp(28px, 6vw, 36px);
+		line-height: 1.05;
+		margin-bottom: 14px;
+		text-wrap: balance;
+	}
+	.sortie-panneau h2 em { font-style: italic; color: var(--vert); }
+	.sortie-texte { font-size: 14.5px; line-height: 1.6; color: var(--muet); margin-bottom: 18px; }
+	.sortie-liste { list-style: none; text-align: left; margin: 0 0 22px; }
+	.sortie-liste li {
+		display: flex;
+		gap: 12px;
+		align-items: flex-start;
+		font-size: 14px;
+		line-height: 1.55;
+		color: var(--muet);
+		padding: 9px 0;
+		border-top: 1px solid var(--bord-2);
+	}
+	.sortie-liste li:last-child { border-bottom: 1px solid var(--bord-2); }
+	.sortie-liste .puce {
+		flex-shrink: 0;
+		width: 7px; height: 7px;
+		margin-top: 8px;
+		border-radius: 50%;
+		background: var(--vert);
+		box-shadow: 0 0 8px rgba(166, 255, 77, 0.8);
+	}
+	.sortie-panneau .champ { margin-bottom: 12px; text-align: left; }
+	.sortie-panneau .bouton { margin-top: 18px; padding: 18px; }
+	.sortie-note { margin-top: 14px; font-size: 12.5px; color: var(--muet-2); }
+	.sortie-note a { color: var(--vert); }
+	.sortie-merci .whatsapp { margin-bottom: 8px; }
+	@media (max-width: 430px) {
+		.sortie-panneau { padding: 30px 20px 24px; }
+	}
+</style>
+
+<script>
+	import { $, donnees, envoyer, inscrit, marquerErreur, marquerInscrit, pointeurFin, emailValide, telValide } from '../scripts/etat';
+
+	const CLE = 'lnb-exit-vu';
+	const popup = $('popup-sortie');
+	const fermer = $('fermer-sortie');
+	const carte = $('inscription');
+	const arrivee = Date.now();
+	let montree = false;
+	try {
+		if (sessionStorage.getItem(CLE)) montree = true;
+	} catch {}
+
+	function formulaireVisible() {
+		const r = carte.getBoundingClientRect();
+		return r.top < window.innerHeight * 0.9 && r.bottom > 0;
+	}
+
+	function ouvrir() {
+		if (montree || inscrit || !popup.hidden) return;
+		if (Date.now() - arrivee < 12000) return;
+		if (formulaireVisible()) return;
+		if (document.querySelector('.modale:not([hidden]):not(.sortie)')) return;
+		montree = true;
+		try {
+			sessionStorage.setItem(CLE, '1');
+		} catch {}
+		popup.hidden = false;
+		document.body.style.overflow = 'hidden';
+		($('sortie-prenom') as HTMLInputElement).focus({ preventScroll: true });
+	}
+
+	function refermer() {
+		popup.hidden = true;
+		document.body.style.overflow = '';
+	}
+
+	// Ordinateur : la souris file vers la barre d'onglets.
+	if (pointeurFin) {
+		document.addEventListener('mouseleave', (e) => {
+			if (e.clientY <= 0) ouvrir();
+		});
+	} else {
+		// Mobile : remontée rapide vers le haut après avoir lu un tiers de la page.
+		let dernierY = window.scrollY;
+		let dernierT = Date.now();
+		let profondeur = 0;
+		window.addEventListener('scroll', () => {
+			const y = window.scrollY;
+			const t = Date.now();
+			const total = document.documentElement.scrollHeight - window.innerHeight;
+			if (total > 0) profondeur = Math.max(profondeur, y / total);
+			const vitesse = (dernierY - y) / Math.max(1, t - dernierT); // px/ms vers le haut
+			if (profondeur > 0.33 && vitesse > 1.4 && y < total * 0.25) ouvrir();
+			dernierY = y;
+			dernierT = t;
+		}, { passive: true });
+	}
+
+	fermer.addEventListener('click', refermer);
+	popup.addEventListener('click', (e) => {
+		if (e.target === popup) refermer();
+	});
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape' && !popup.hidden) refermer();
+	});
+	$('sortie-vers-candidature').addEventListener('click', () => {
+		refermer();
+		const radio = document.querySelector<HTMLInputElement>('input[name="mode"][value="coaching"]');
+		if (radio) {
+			radio.checked = true;
+			radio.dispatchEvent(new Event('change'));
+		}
+	});
+
+	/* ---------- Le mini-formulaire : une inscription « assister » ---------- */
+	const btn = $('btn-sortie') as HTMLButtonElement;
+	btn.addEventListener('click', async () => {
+		const prenom = ($('sortie-prenom') as HTMLInputElement).value.trim();
+		const email = ($('sortie-email') as HTMLInputElement).value.trim();
+		const tel = ($('sortie-tel') as HTMLInputElement).value.trim();
+
+		let ok = true;
+		ok = marquerErreur('sortie-champ-prenom', prenom.length < 2) && ok;
+		ok = marquerErreur('sortie-champ-email', !emailValide(email)) && ok;
+		ok = marquerErreur('sortie-champ-tel', !telValide(tel)) && ok;
+		if (!ok) return;
+
+		donnees.prenom = prenom;
+		donnees.email = email;
+		donnees.tel = tel;
+		donnees.mode = 'assister';
+		donnees.source += ' · popup-sortie';
+
+		const erreur = $('erreur-sortie');
+		erreur.hidden = true;
+		btn.disabled = true;
+		const enregistre = await envoyer('inscription');
+		btn.disabled = false;
+		if (!enregistre) {
+			erreur.hidden = false;
+			return;
+		}
+		marquerInscrit();
+
+		// Le formulaire principal hérite des coordonnées : s'il veut candidater
+		// ensuite, il n'a pas à les retaper.
+		($('prenom') as HTMLInputElement).value = prenom;
+		($('email') as HTMLInputElement).value = email;
+		($('tel') as HTMLInputElement).value = tel;
+
+		$('sortie-formulaire').hidden = true;
+		$('sortie-merci').hidden = false;
+		fermer.focus();
+	});
+</script>
