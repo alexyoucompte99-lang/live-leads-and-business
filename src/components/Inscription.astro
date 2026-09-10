@@ -53,6 +53,16 @@ import WhatsAppCard from './WhatsAppCard.astro';
 			<p class="erreur">Choisis l'une des deux options.</p>
 		</div>
 
+		<div class="champ" id="champ-droits">
+			<label class="consentement">
+				<input type="checkbox" id="droits" name="droits" />
+				<span>J'autorise Leads and Business à enregistrer le live, y compris mon image, ma voix et mes interventions, et à en utiliser des extraits pour présenter ses coachings sur son site, ses réseaux et ses publicités.
+					<small>Nécessaire pour participer, que tu assistes ou que tu sois coaché. Les informations sensibles (noms de clients, coordonnées, données financières détaillées) sont anonymisées dans tout extrait diffusé. Ne partage aucun mot de passe ni donnée confidentielle de tiers.</small>
+				</span>
+			</label>
+			<p class="erreur">Cette autorisation est nécessaire pour participer au live.</p>
+		</div>
+
 		<button class="cta bouton" id="btn-optin" type="button" data-libelle-assister="M'inscrire au live" data-libelle-coaching="Continuer vers ma candidature">M'inscrire au live</button>
 		<p class="erreur-envoi" id="erreur-optin" hidden>L'enregistrement n'a pas fonctionné. Vérifie ta connexion et réessaie ; si ça persiste, écris-nous.</p>
 		<p class="mention-rgpd">En validant, tu acceptes que Leads and Business utilise ces informations pour t'envoyer le lien du live et les rappels. Tu peux demander leur suppression à tout moment. <a href="#" data-ouvre-legal>Politique de confidentialité</a>.</p>
@@ -111,13 +121,7 @@ import WhatsAppCard from './WhatsAppCard.astro';
 				<input type="checkbox" id="accord" name="accord" />
 				<span>Je suis d'accord pour être coaché en direct, devant les autres participants. Ce que je dis pendant le live est entendu par eux.</span>
 			</label>
-			<label class="consentement">
-				<input type="checkbox" id="droits" name="droits" />
-				<span>J'autorise Leads and Business à enregistrer mon image, ma voix et mon intervention, et à en utiliser des extraits pour présenter ses coachings sur son site, ses réseaux et ses publicités.
-					<small>Facultatif. Les informations sensibles de ton activité (noms de clients, coordonnées, données financières détaillées) sont anonymisées dans tout extrait diffusé. Ne partage aucun mot de passe ni donnée confidentielle de tiers.</small>
-				</span>
-			</label>
-			<p class="erreur">La première case est nécessaire pour candidater.</p>
+			<p class="erreur">Cette case est nécessaire pour candidater.</p>
 		</div>
 
 		<button class="cta bouton" id="btn-candidature" type="button">Envoyer ma candidature au coaching</button>
@@ -256,18 +260,21 @@ import WhatsAppCard from './WhatsAppCard.astro';
 		const email = ($('email') as HTMLInputElement).value.trim();
 		const tel = ($('tel') as HTMLInputElement).value.trim();
 		const mode = document.querySelector<HTMLInputElement>('input[name="mode"]:checked');
+		const droits = ($('droits') as HTMLInputElement).checked;
 
 		let ok = true;
 		ok = marquerErreur('champ-prenom', prenom.length < 2) && ok;
 		ok = marquerErreur('champ-email', !emailValide(email)) && ok;
 		ok = marquerErreur('champ-tel', !telValide(tel)) && ok;
 		ok = marquerErreur('champ-mode', !mode) && ok;
+		ok = marquerErreur('champ-droits', !droits) && ok;
 		if (!ok || !mode) return;
 
 		donnees.prenom = prenom;
 		donnees.email = email;
 		donnees.tel = tel;
 		donnees.mode = mode.value;
+		donnees.droits = true;
 
 		const erreur = $('erreur-optin');
 		erreur.hidden = true;
@@ -301,7 +308,6 @@ import WhatsAppCard from './WhatsAppCard.astro';
 		const objectif = valeur('objectif');
 		const ca = valeur('ca');
 		const accord = ($('accord') as HTMLInputElement).checked;
-		const droits = ($('droits') as HTMLInputElement).checked;
 
 		let ok = true;
 		ok = marquerErreur('champ-profil', !profil) && ok;
@@ -320,7 +326,6 @@ import WhatsAppCard from './WhatsAppCard.astro';
 		donnees.objectif = objectif;
 		donnees.ca = ca;
 		donnees.accord = true;
-		donnees.droits = droits;
 
 		const erreur = $('erreur-candidature');
 		erreur.hidden = true;

@@ -35,7 +35,7 @@ export const donnees = {
 	objectif: '',
 	ca: '',
 	accord: false,
-	droits: false,
+	droits: false, // autorisation image, obligatoire depuis l'étape 1 (assister comme coaching)
 	source: LIVE.SOURCE + (utm ? ' · ' + utm : '')
 };
 
