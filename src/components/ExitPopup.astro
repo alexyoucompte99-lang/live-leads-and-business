@@ -3,12 +3,12 @@
  * La popup de sortie, reprise de Free Formation : quand le visiteur quitte
  * la page sans s'être inscrit, une dernière proposition courte.
  *
- * Déclencheurs :
+ * Déclencheurs, calqués sur Free Formation :
  *  - ordinateur : la souris sort de la fenêtre par le haut (barre d'onglets).
- *  - mobile : remontée rapide vers le haut après avoir lu au moins un tiers
- *    de la page (le geste qui précède la fermeture de l'onglet).
- * Jamais avant 12 s de lecture, jamais pendant que le formulaire est à
- * l'écran, jamais après une inscription, une seule fois par session.
+ *  - mobile : remontée rapide vers le haut après avoir lu un quart de la
+ *    page (le geste qui précède la fermeture de l'onglet).
+ * Une fois par chargement de page, jamais après une inscription, jamais
+ * pendant qu'on tape dans un champ.
  */
 import { LIVE, QUAND } from '../config/live';
 import WhatsAppCard from './WhatsAppCard.astro';
@@ -110,32 +110,22 @@ import WhatsAppCard from './WhatsAppCard.astro';
 </style>
 
 <script>
-	import { $, donnees, envoyer, inscrit, marquerErreur, marquerInscrit, pointeurFin, emailValide, telValide } from '../scripts/etat';
+	import { $, donnees, envoyer, inscrit, marquerErreur, marquerInscrit, emailValide, telValide } from '../scripts/etat';
 
-	const CLE = 'lnb-exit-vu';
 	const popup = $('popup-sortie');
 	const fermer = $('fermer-sortie');
-	const carte = $('inscription');
 	const arrivee = Date.now();
 	let montree = false;
-	try {
-		if (sessionStorage.getItem(CLE)) montree = true;
-	} catch {}
-
-	function formulaireVisible() {
-		const r = carte.getBoundingClientRect();
-		return r.top < window.innerHeight * 0.9 && r.bottom > 0;
-	}
 
 	function ouvrir() {
 		if (montree || inscrit || !popup.hidden) return;
-		if (Date.now() - arrivee < 12000) return;
-		if (formulaireVisible()) return;
+		// Deux secondes de grâce : le temps que la page se pose, pas plus.
+		if (Date.now() - arrivee < 2000) return;
+		// Pas pendant qu'on tape dans un champ, ni par-dessus les mentions légales.
+		const actif = document.activeElement;
+		if (actif && (actif.tagName === 'INPUT' || actif.tagName === 'TEXTAREA' || actif.tagName === 'SELECT')) return;
 		if (document.querySelector('.modale:not([hidden]):not(.sortie)')) return;
 		montree = true;
-		try {
-			sessionStorage.setItem(CLE, '1');
-		} catch {}
 		popup.hidden = false;
 		document.body.style.overflow = 'hidden';
 		($('sortie-prenom') as HTMLInputElement).focus({ preventScroll: true });
@@ -146,13 +136,23 @@ import WhatsAppCard from './WhatsAppCard.astro';
 		document.body.style.overflow = '';
 	}
 
-	// Ordinateur : la souris file vers la barre d'onglets.
-	if (pointeurFin) {
-		document.addEventListener('mouseleave', (e) => {
-			if (e.clientY <= 0) ouvrir();
-		});
-	} else {
-		// Mobile : remontée rapide vers le haut après avoir lu un tiers de la page.
+	/* Ordinateur : la souris file vers la barre d'onglets ou la barre d'adresse.
+	   Deux écouteurs, parce que les navigateurs ne s'accordent pas : `mouseout`
+	   sans relatedTarget quand le curseur quitte la fenêtre (Chrome, Edge,
+	   Firefox), `mouseleave` sur <html> en renfort (Safari). Le seuil de 40 px
+	   rattrape les sorties rapides où le dernier point connu est encore
+	   légèrement sous le bord. */
+	function sortieParLeHaut(e: MouseEvent) {
+		if (e.clientY <= 40) ouvrir();
+	}
+	document.addEventListener('mouseout', (e) => {
+		if (!e.relatedTarget) sortieParLeHaut(e);
+	});
+	document.documentElement.addEventListener('mouseleave', sortieParLeHaut);
+
+	/* Mobile : remontée franche vers le haut après avoir lu un quart de la
+	   page, le geste qui précède la fermeture de l'onglet. */
+	if (window.matchMedia('(pointer: coarse)').matches) {
 		let dernierY = window.scrollY;
 		let dernierT = Date.now();
 		let profondeur = 0;
@@ -162,7 +162,7 @@ import WhatsAppCard from './WhatsAppCard.astro';
 			const total = document.documentElement.scrollHeight - window.innerHeight;
 			if (total > 0) profondeur = Math.max(profondeur, y / total);
 			const vitesse = (dernierY - y) / Math.max(1, t - dernierT); // px/ms vers le haut
-			if (profondeur > 0.33 && vitesse > 1.4 && y < total * 0.25) ouvrir();
+			if (profondeur > 0.25 && vitesse > 0.8 && y < total * 0.3) ouvrir();
 			dernierY = y;
 			dernierT = t;
 		}, { passive: true });
