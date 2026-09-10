@@ -1,0 +1,2608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Le live business gratuit · Leads and Business</title>
+<meta name="description" content="Chaque semaine, Lucas Fabre coache en direct un freelance sur le vrai blocage de son business. Mardi 15 septembre à 17h00, gratuit, en ligne. Réserve ta place, ou propose ton cas.">
+<meta name="theme-color" content="#060a04">
+<meta name="robots" content="noindex, nofollow">
+<meta property="og:title" content="Le live business gratuit · Leads and Business">
+<meta property="og:description" content="Un freelance, un vrai blocage, et Lucas qui le règle en direct. Chaque semaine, gratuit, en ligne.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/logo.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300..800&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<style>
+  /* ======================================================================
+     LEADS AND BUSINESS · LP LIVE BUSINESS, v1 « Le signal »
+     Même squelette que la LP live Selfty (hero, pour qui, déroulé, mot du
+     host, preuves, flow d'inscription en étapes), relue dans la DA de Lucas :
+     celle de son deck de closing et de son Tally.
+
+     Fond       #060a04   le noir vert profond
+     Panneau    #0f1608   cartes et blocs
+     Vert néon  #a6ff4d   accents, CTA, signal
+     Crème      #f6f4ec   texte
+     Gris vert  #b9c2aa   texte secondaire
+
+     Typo titres : Instrument Serif (régulier + italique).
+     Typo corps  : Geist.  Labels : Geist Mono.
+
+     Le logo Leads and Business est un globe filaire : tout le motion de la
+     page vient de là. Un globe qui tourne lentement derrière le titre, un
+     point vert qui bat comme un témoin « en direct », et une ligne verte
+     qui descend la page comme un fil de terminal.
+  ====================================================================== */
+
+  :root {
+    color-scheme: dark;
+    --fond: #060a04;
+    --fond-2: #0a1006;
+    --panneau: #0f1608;
+    --panneau-2: #141d0b;
+    --vert: #a6ff4d;
+    --vert-doux: #c5ff8a;
+    --vert-dim: rgba(166, 255, 77, 0.13);
+    --vert-bord: rgba(166, 255, 77, 0.32);
+    --vert-texte: #8fe03a;
+    --creme: #f6f4ec;
+    --muet: #b9c2aa;
+    --muet-2: #7f8a72;
+    --bord: rgba(166, 255, 77, 0.14);
+    --bord-2: rgba(246, 244, 236, 0.08);
+    --rouge: #ff6d70;
+    --or: #ffd76a;
+    --encre: #071009;
+
+    --display: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+    --body: 'Geist', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+
+    --doux: cubic-bezier(0.22, 1, 0.36, 1);
+    --souple: cubic-bezier(0.19, 1, 0.22, 1);
+
+    /* Position du curseur, alimentée en JS pour le halo qui suit la souris */
+    --sx: 50vw;
+    --sy: 30vh;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--fond); }
+
+  body {
+    font-family: var(--body);
+    background: var(--fond);
+    color: var(--creme);
+    line-height: 1.68;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  /* ====================================================================
+     01 · LE VOILE D'OUVERTURE
+  ==================================================================== */
+  .voile {
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: var(--fond);
+    pointer-events: none;
+    transform: translateY(0);
+    transition: transform 1.1s var(--souple) 0.15s;
+  }
+  .voile.leve { transform: translateY(-101%); }
+
+  /* ====================================================================
+     02 · LA LUMIÈRE : grille, auras vertes, halo du curseur, balayage
+  ==================================================================== */
+  .grille {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(166, 255, 77, 0.055) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(166, 255, 77, 0.055) 1px, transparent 1px);
+    background-size: 46px 46px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 60% at 50% 18%, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 18%, #000 0%, rgba(0, 0, 0, 0.55) 45%, transparent 100%);
+  }
+
+  .aura {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(70px);
+    pointer-events: none;
+    z-index: 0;
+    will-change: transform;
+  }
+  .aura-a {
+    top: -22vh; left: 50%;
+    width: 78vw; height: 78vw;
+    max-width: 760px; max-height: 760px;
+    margin-left: -39vw;
+    background: radial-gradient(circle, rgba(166, 255, 77, 0.16) 0%, rgba(166, 255, 77, 0) 68%);
+    animation: derive-a 26s ease-in-out infinite;
+  }
+  .aura-b {
+    top: 48vh; left: -24vw;
+    width: 62vw; height: 62vw;
+    max-width: 560px; max-height: 560px;
+    background: radial-gradient(circle, rgba(166, 255, 77, 0.09) 0%, rgba(166, 255, 77, 0) 70%);
+    animation: derive-b 34s ease-in-out infinite;
+  }
+  @keyframes derive-a {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(3vw, 4vh) scale(1.09); }
+  }
+  @keyframes derive-b {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50%      { transform: translate(6vw, -5vh) scale(1.12); }
+  }
+
+  .halo-curseur {
+    position: fixed;
+    top: 0; left: 0;
+    width: 520px; height: 520px;
+    margin: -260px 0 0 -260px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(166, 255, 77, 0.11) 0%, rgba(166, 255, 77, 0) 64%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 0.9s ease;
+    transform: translate3d(var(--sx), var(--sy), 0);
+    will-change: transform;
+  }
+  .halo-curseur.actif { opacity: 1; }
+
+  /* Le balayage : une bande de lumière qui descend l'écran, comme un radar */
+  .scan {
+    position: fixed;
+    left: 0; right: 0;
+    top: -160px;
+    height: 160px;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(166, 255, 77, 0) 0%, rgba(166, 255, 77, 0.045) 50%, rgba(166, 255, 77, 0) 100%);
+    animation: balaye 11s linear infinite;
+  }
+  @keyframes balaye {
+    from { transform: translateY(0); }
+    to   { transform: translateY(calc(100vh + 160px)); }
+  }
+
+  /* ---------- Les particules qui montent ---------- */
+  .poussieres { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+  .poussiere {
+    position: absolute;
+    width: 3px; height: 3px;
+    border-radius: 50%;
+    background: var(--vert);
+    box-shadow: 0 0 6px rgba(166, 255, 77, 0.8);
+    opacity: 0;
+    animation: monte-poussiere linear infinite;
+  }
+  @keyframes monte-poussiere {
+    0%   { transform: translateY(0) translateX(0); opacity: 0; }
+    12%  { opacity: 0.55; }
+    80%  { opacity: 0.3; }
+    100% { transform: translateY(-58vh) translateX(22px); opacity: 0; }
+  }
+
+  /* ====================================================================
+     03 · LA JAUGE DE LECTURE
+  ==================================================================== */
+  .jauge {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    width: 100%;
+    z-index: 40;
+    background: var(--vert);
+    box-shadow: 0 0 10px rgba(166, 255, 77, 0.6);
+    transform: scaleX(0);
+    transform-origin: left;
+    will-change: transform;
+  }
+
+  /* ====================================================================
+     04 · LE CADRE
+  ==================================================================== */
+  .page {
+    position: relative;
+    z-index: 2;
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+  }
+
+  .rail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 0 14px;
+    border-bottom: 1px solid var(--bord);
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muet);
+  }
+  .rail span { white-space: nowrap; }
+  .rail .rail-gauche { display: flex; align-items: center; gap: 10px; }
+  .rail .marque-mini {
+    width: 18px; height: auto;
+    display: block;
+    animation: respire-mini 11s ease-in-out infinite;
+  }
+  @keyframes respire-mini {
+    0%, 100% { transform: scale(1); opacity: 0.75; }
+    38%      { transform: scale(1.12); opacity: 1; }
+  }
+  .rail .rail-droite { color: var(--vert); }
+
+  /* Le fil : une ligne verte qui se dessine en descendant la page */
+  .fil {
+    position: absolute;
+    top: 470px;
+    left: 3px;
+    width: 1px;
+    height: 0;
+    background: linear-gradient(to bottom, rgba(166, 255, 77, 0), rgba(166, 255, 77, 0.55) 14%, rgba(166, 255, 77, 0.55));
+    pointer-events: none;
+    z-index: 0;
+  }
+  .fil::after {
+    content: "";
+    position: absolute;
+    bottom: -3px; left: -2.5px;
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--vert);
+    box-shadow: 0 0 0 0 rgba(166, 255, 77, 0.45);
+    animation: pulse-fil 3.4s ease-out infinite;
+  }
+  @keyframes pulse-fil {
+    0%   { box-shadow: 0 0 0 0 rgba(166, 255, 77, 0.45); }
+    70%  { box-shadow: 0 0 0 10px rgba(166, 255, 77, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(166, 255, 77, 0); }
+  }
+
+  /* ====================================================================
+     05 · HERO
+  ==================================================================== */
+  header {
+    position: relative;
+    text-align: center;
+    padding: 50px 0 60px;
+  }
+  header > *:not(.globe):not(.onde) { position: relative; z-index: 1; }
+
+  /* Le globe filaire du logo, en grand, qui tourne lentement derrière le titre */
+  .globe {
+    position: absolute;
+    top: 46%; left: 50%;
+    width: min(520px, 110vw);
+    height: min(520px, 110vw);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 1.6s ease 0.6s;
+    will-change: transform;
+  }
+  .joue .globe { opacity: 1; }
+  .globe svg { width: 100%; height: 100%; overflow: visible; }
+  .globe .contour { fill: none; stroke: rgba(166, 255, 77, 0.22); stroke-width: 1; }
+  .globe .lat { fill: none; stroke: rgba(166, 255, 77, 0.13); stroke-width: 1; }
+  .globe .mer {
+    fill: none;
+    stroke: rgba(166, 255, 77, 0.2);
+    stroke-width: 1;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: tourne 18s linear infinite;
+  }
+  .globe .m2 { animation-delay: -6s; }
+  .globe .m3 { animation-delay: -12s; }
+  @keyframes tourne {
+    0%    { transform: scaleX(1); }
+    12.5% { transform: scaleX(0.92); }
+    25%   { transform: scaleX(0.7); }
+    37.5% { transform: scaleX(0.38); }
+    50%   { transform: scaleX(0.02); }
+    62.5% { transform: scaleX(0.38); }
+    75%   { transform: scaleX(0.7); }
+    87.5% { transform: scaleX(0.92); }
+    100%  { transform: scaleX(1); }
+  }
+  .globe .halo-globe {
+    fill: url(#halo-vert);
+  }
+
+  /* L'onde d'ouverture : trois cercles partent du logo et se diffusent. Une seule fois. */
+  .onde {
+    position: absolute;
+    top: 0; left: 50%;
+    width: 130px; height: 130px;
+    margin-left: -65px;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .onde i {
+    position: absolute;
+    inset: 0;
+    border: 1px solid var(--vert);
+    border-radius: 50%;
+    opacity: 0;
+  }
+  .joue .onde i { animation: diffuse 2.6s var(--doux) forwards; }
+  .joue .onde i:nth-child(2) { animation-delay: 0.28s; }
+  .joue .onde i:nth-child(3) { animation-delay: 0.56s; }
+  @keyframes diffuse {
+    0%   { transform: scale(0.35); opacity: 0; }
+    18%  { opacity: 0.45; }
+    100% { transform: scale(3.6); opacity: 0; }
+  }
+
+  /* Le logo : le globe + le nom */
+  .marque {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .marque img {
+    display: block;
+    width: 58px;
+    height: auto;
+    filter: drop-shadow(0 0 14px rgba(166, 255, 77, 0.45));
+  }
+  .marque .marque-nom {
+    font-family: var(--display);
+    font-size: 24px;
+    letter-spacing: 0.01em;
+    color: var(--creme);
+    line-height: 1;
+  }
+  .marque .marque-nom em { font-style: italic; color: var(--vert); }
+  .joue .marque { animation: pose-logo 1.5s var(--souple) both; }
+  @keyframes pose-logo {
+    from { opacity: 0; transform: scale(1.14); filter: blur(6px); }
+    to   { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+
+  .badge-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--creme);
+    background: rgba(15, 22, 8, 0.86);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--vert-bord);
+    border-radius: 100px;
+    padding: 9px 18px;
+    margin-bottom: 28px;
+  }
+  .badge-date .point {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--vert);
+    box-shadow: 0 0 8px rgba(166, 255, 77, 0.9);
+    flex-shrink: 0;
+    animation: clignote 1.8s ease-in-out infinite;
+  }
+  @keyframes clignote {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.35; transform: scale(0.75); }
+  }
+  .badge-date .compte {
+    color: var(--vert);
+    padding-left: 10px;
+    border-left: 1px solid var(--vert-bord);
+  }
+  @media (max-width: 430px) {
+    .badge-date {
+      font-size: 9.5px;
+      letter-spacing: 0.12em;
+      gap: 7px;
+      padding: 8px 13px;
+      white-space: nowrap;
+    }
+    .badge-date .compte { padding-left: 7px; }
+  }
+
+  h1 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(40px, 9.8vw, 72px);
+    line-height: 1.02;
+    letter-spacing: -0.012em;
+    margin-bottom: 26px;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--vert); }
+
+  /* Révélation ligne à ligne, par masque */
+  .ligne { display: block; overflow: hidden; padding-bottom: 0.12em; margin-bottom: -0.06em; }
+  .ligne > span { display: block; transform: translateY(112%); }
+  .joue .ligne > span { animation: monte-ligne 1.05s var(--souple) both; }
+  .joue .ligne:nth-child(1) > span { animation-delay: 0.55s; }
+  .joue .ligne:nth-child(2) > span { animation-delay: 0.65s; }
+  .joue .ligne:nth-child(3) > span { animation-delay: 0.75s; }
+  .joue .ligne:nth-child(4) > span { animation-delay: 0.85s; }
+  @keyframes monte-ligne { to { transform: translateY(0); } }
+
+  .sous-titre {
+    font-size: 17.5px;
+    line-height: 1.6;
+    color: var(--muet);
+    max-width: 520px;
+    margin: 0 auto 16px;
+  }
+  .animatrice {
+    font-size: 13.5px;
+    letter-spacing: 0.01em;
+    color: var(--muet);
+    margin-bottom: 34px;
+  }
+  .animatrice strong { font-weight: 600; color: var(--creme); }
+
+  .apparait { opacity: 0; }
+  .joue .apparait { animation: leve 1s var(--doux) both; }
+  @keyframes leve {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .d1 { animation-delay: 0.30s; }
+  .d2 { animation-delay: 0.98s; }
+  .d3 { animation-delay: 1.10s; }
+  .d4 { animation-delay: 1.22s; }
+  .d5 { animation-delay: 1.46s; }
+
+  /* ====================================================================
+     06 · BOUTONS
+  ==================================================================== */
+  .cta {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    font-family: var(--body);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--encre);
+    background: var(--vert);
+    border: none;
+    border-radius: 12px;
+    padding: 19px 40px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.35s ease, transform 0.3s var(--doux), box-shadow 0.35s ease;
+    box-shadow: 0 12px 34px rgba(166, 255, 77, 0.2);
+  }
+  .cta::after {
+    content: "";
+    position: absolute;
+    top: 0; left: -120%;
+    width: 60%; height: 100%;
+    background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.38) 50%, rgba(255,255,255,0) 100%);
+    transform: skewX(-18deg);
+    pointer-events: none;
+  }
+  .cta:hover::after { animation: lueur 0.85s ease forwards; }
+  @keyframes lueur { to { left: 130%; } }
+  .cta:hover { background: var(--vert-doux); box-shadow: 0 18px 44px rgba(166, 255, 77, 0.32); transform: translateY(-2px); }
+
+  .cta .ondulation {
+    position: absolute;
+    width: 12px; height: 12px;
+    margin: -6px 0 0 -6px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.45);
+    pointer-events: none;
+    animation: ondule 0.75s ease-out forwards;
+  }
+  @keyframes ondule { to { transform: scale(22); opacity: 0; } }
+
+  .joue .cta-hero { animation: leve 1s var(--doux) 1.34s both, souffle-ombre 5s ease-in-out 2.6s infinite; }
+  @keyframes souffle-ombre {
+    0%, 100% { box-shadow: 0 12px 34px rgba(166, 255, 77, 0.2); }
+    40%      { box-shadow: 0 16px 50px rgba(166, 255, 77, 0.38); }
+  }
+  .cta-hero:hover { animation-play-state: paused; }
+
+  /* Le bouton secondaire : contour vert, fond transparent */
+  .cta.secondaire-btn {
+    background: transparent;
+    color: var(--vert);
+    border: 1px solid var(--vert-bord);
+    box-shadow: none;
+  }
+  .cta.secondaire-btn:hover { background: var(--vert-dim); box-shadow: none; }
+  .cta.secondaire-btn::after { display: none; }
+
+  .rassurance {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muet-2);
+    margin-top: 18px;
+  }
+
+  :focus-visible { outline: 2px solid var(--vert); outline-offset: 3px; border-radius: 4px; }
+
+  /* ====================================================================
+     07 · SECTIONS
+  ==================================================================== */
+  .section { margin: 0 0 66px; }
+
+  .titre-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .titre-section h2 {
+    font-family: var(--mono);
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.26em;
+    text-transform: uppercase;
+    color: var(--vert);
+    white-space: nowrap;
+  }
+  .titre-section h2 .l {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.42em);
+    transition: opacity 0.5s ease, transform 0.5s var(--doux);
+  }
+  .titre-section.vu h2 .l { opacity: 1; transform: translateY(0); }
+  .titre-section .trait {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(166, 255, 77, 0.45), rgba(166, 255, 77, 0));
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 1.2s var(--doux) 0.3s;
+  }
+  .titre-section.vu .trait { transform: scaleX(1); }
+  .titre-section.centre { justify-content: center; }
+  .titre-section.centre .trait { max-width: 46px; background: rgba(166, 255, 77, 0.4); }
+  .titre-section.centre .trait:last-child { transform-origin: right; }
+
+  /* ---------- Pour qui ---------- */
+  .pour-qui { list-style: none; }
+  .pour-qui li {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--bord-2);
+    font-size: 16px;
+    color: var(--muet);
+  }
+  .pour-qui li:first-child { border-top: 1px solid var(--bord-2); }
+  .pour-qui li strong { color: var(--creme); font-weight: 600; }
+  .pour-qui .puce {
+    flex-shrink: 0;
+    width: 8px; height: 8px;
+    margin-top: 10px;
+    border: 1px solid var(--vert);
+    border-radius: 50%;
+    transition: background 0.6s ease 0.35s, box-shadow 0.6s ease 0.35s;
+  }
+  .pour-qui li.vu .puce { background: var(--vert); box-shadow: 0 0 0 4px var(--vert-dim), 0 0 12px rgba(166, 255, 77, 0.6); }
+
+  /* ---------- Déroulé ---------- */
+  .deroule {
+    background: linear-gradient(168deg, var(--panneau) 0%, var(--fond-2) 100%);
+    border: 1px solid var(--bord);
+    border-radius: 24px;
+    padding: 36px 26px 30px;
+  }
+  .etape {
+    display: flex;
+    gap: 20px;
+    padding: 24px 0;
+    border-top: 1px solid var(--bord-2);
+    align-items: flex-start;
+  }
+  .etape:first-of-type { border-top: none; padding-top: 4px; }
+
+  .pastille {
+    position: relative;
+    flex-shrink: 0;
+    width: 44px; height: 44px;
+    display: grid;
+    place-items: center;
+  }
+  .pastille svg { position: absolute; inset: 0; width: 44px; height: 44px; transform: rotate(-90deg); }
+  .pastille circle {
+    fill: none;
+    stroke: var(--vert);
+    stroke-width: 1.1;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 1.4s var(--doux) 0.2s;
+  }
+  .etape.vu .pastille circle { stroke-dashoffset: 0; }
+  .pastille em {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 19px;
+    color: var(--vert);
+    opacity: 0;
+    transform: translateY(5px);
+    transition: opacity 0.7s ease 0.6s, transform 0.7s var(--doux) 0.6s;
+  }
+  .etape.vu .pastille em { opacity: 1; transform: translateY(0); }
+
+  .etape h3 {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--creme);
+    margin-bottom: 8px;
+  }
+  .etape p { font-size: 15.5px; color: var(--muet); }
+
+  .note {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    text-align: left;
+    font-size: 14.5px;
+    color: var(--muet);
+    background: var(--fond);
+    border: 1px solid var(--bord);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-top: 22px;
+  }
+  .note + .note { margin-top: 12px; }
+  .note strong { display: block; margin-bottom: 2px; color: var(--creme); }
+  .note .prompt {
+    flex-shrink: 0;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--vert);
+    margin-top: 4px;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.8s ease 0.3s, transform 0.8s var(--doux) 0.3s;
+  }
+  .note.vu .prompt { opacity: 1; transform: translateX(0); }
+  .note.vu .prompt::after {
+    content: "";
+    display: inline-block;
+    width: 7px; height: 13px;
+    margin-left: 3px;
+    vertical-align: -2px;
+    background: var(--vert);
+    animation: curseur 1.1s steps(2, start) infinite;
+  }
+  @keyframes curseur { to { visibility: hidden; } }
+
+  /* ---------- Le mot de Lucas ---------- */
+  .mot {
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 26px;
+    padding: 28px 26px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  }
+  .portrait { position: relative; flex-shrink: 0; width: 88px; height: 88px; }
+  .portrait img,
+  .portrait .initiale {
+    width: 88px; height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+    background: var(--vert);
+  }
+  .portrait .initiale {
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 40px;
+    color: var(--encre);
+  }
+  .portrait::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border: 1px solid var(--vert-bord);
+    border-radius: 50%;
+    animation: respire-portrait 6s ease-in-out infinite;
+  }
+  @keyframes respire-portrait {
+    0%, 100% { transform: scale(1); opacity: 0.7; }
+    40%      { transform: scale(1.06); opacity: 1; }
+  }
+  .mot p { font-size: 15.5px; color: var(--muet); }
+  .mot p + p { margin-top: 10px; }
+  .mot .signature {
+    font-family: var(--display);
+    font-style: italic;
+    font-size: 30px;
+    color: var(--vert);
+    margin-top: 14px;
+    line-height: 1;
+  }
+  .mot .qui {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muet-2);
+    margin-top: 6px;
+  }
+  @media (max-width: 480px) {
+    .mot { flex-direction: column; gap: 18px; }
+  }
+
+  /* ---------- Preuves ---------- */
+  .preuves { text-align: center; }
+
+  .courbe { margin-bottom: 12px; }
+  .courbe svg { overflow: visible; }
+  .courbe path {
+    fill: none;
+    stroke: var(--vert);
+    stroke-width: 1.4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition: stroke-dashoffset 2.2s var(--doux) 0.2s;
+  }
+  .courbe circle {
+    fill: var(--vert);
+    opacity: 0;
+    transition: opacity 0.6s ease 2.1s;
+  }
+  .courbe.vu path { stroke-dashoffset: 0; }
+  .courbe.vu circle { opacity: 1; animation: clignote 1.8s ease-in-out 2.4s infinite; }
+
+  .citation {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(27px, 5.8vw, 40px);
+    line-height: 1.18;
+    color: var(--creme);
+    max-width: 560px;
+    margin: 0 auto 14px;
+  }
+  .citation em { font-style: italic; color: var(--vert); }
+  .citation .mot-a-mot {
+    display: inline-block;
+    opacity: 0;
+    transform: translateY(0.4em);
+    transition: opacity 0.7s ease, transform 0.7s var(--doux);
+  }
+  .citation.vu .mot-a-mot { opacity: 1; transform: translateY(0); }
+
+  .citation-source {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muet);
+  }
+  .citation-source b { color: var(--vert); font-weight: 500; }
+
+  .chiffres {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin: 34px 0 8px;
+  }
+  .chiffres div {
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 18px;
+    padding: 20px 12px 16px;
+  }
+  .chiffres b {
+    display: block;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(30px, 6vw, 40px);
+    line-height: 1.05;
+    color: var(--vert);
+  }
+  .chiffres span {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muet);
+    line-height: 1.5;
+  }
+
+  .videos { display: grid; gap: 16px; margin-top: 26px; text-align: left; }
+  @media (min-width: 540px) { .videos.multi { grid-template-columns: 1fr 1fr; } }
+  .video { margin: 0; }
+  .video video {
+    display: block;
+    width: 100%;
+    aspect-ratio: var(--ratio, 16 / 9);
+    object-fit: cover;
+    border: 1px solid var(--bord);
+    border-radius: 16px;
+    background: #000;
+  }
+  .video figcaption { padding: 10px 4px 0; }
+  .video figcaption b { display: block; font-size: 14.5px; font-weight: 600; color: var(--creme); }
+  .video figcaption span { display: block; font-size: 12.5px; color: var(--muet); }
+  .video figcaption em {
+    display: block;
+    margin-top: 4px;
+    font-family: var(--mono);
+    font-style: normal;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: var(--vert);
+  }
+
+  /* ---------- Le mentorat, en bref ---------- */
+  .mentorat {
+    background: linear-gradient(168deg, var(--panneau) 0%, var(--fond-2) 100%);
+    border: 1px solid var(--bord);
+    border-radius: 20px;
+    padding: 26px 24px 24px;
+  }
+  .mentorat-chiffres {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    padding-bottom: 20px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid var(--bord-2);
+  }
+  .mentorat-chiffres div { text-align: center; }
+  .mentorat-chiffres b {
+    display: block;
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 32px;
+    line-height: 1.1;
+    color: var(--vert);
+  }
+  .mentorat-chiffres span {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--muet);
+  }
+  .mentorat ul { list-style: none; }
+  .mentorat li {
+    font-size: 14.5px;
+    line-height: 1.55;
+    color: var(--muet);
+    padding: 10px 0;
+    text-align: left;
+  }
+  .mentorat li + li { border-top: 1px solid var(--bord-2); }
+  .mentorat li strong { color: var(--creme); font-weight: 600; }
+  .mentorat .voir { text-align: center; margin-top: 20px; }
+
+  /* ====================================================================
+     08 · FORMULAIRE
+  ==================================================================== */
+  .carte {
+    position: relative;
+    background: #0c1307;
+    border: 1px solid var(--vert-bord);
+    border-radius: 28px;
+    padding: 42px 26px 44px;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 70px rgba(166, 255, 77, 0.06);
+  }
+
+  .carte h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(34px, 6.6vw, 48px);
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .carte h2 em { font-style: italic; color: var(--vert); }
+  .carte .intro {
+    text-align: center;
+    font-size: 14.5px;
+    color: var(--muet);
+    max-width: 440px;
+    margin: 0 auto 32px;
+  }
+  .carte .intro strong { color: var(--creme); }
+
+  .champ { position: relative; margin-bottom: 24px; }
+
+  label.etiquette {
+    display: block;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muet);
+    margin-bottom: 9px;
+    line-height: 1.75;
+    transition: color 0.3s ease;
+  }
+  label.etiquette small {
+    display: block;
+    font-family: var(--body);
+    font-size: 12.5px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--muet-2);
+    line-height: 1.5;
+    margin-top: 2px;
+  }
+  .champ:focus-within label.etiquette { color: var(--vert); }
+
+  .boite { position: relative; }
+  .boite::after {
+    content: "";
+    position: absolute;
+    left: 12px; right: 12px; bottom: 0;
+    height: 1.5px;
+    background: var(--vert);
+    border-radius: 2px;
+    transform: scaleX(0);
+    transition: transform 0.55s var(--doux);
+  }
+  .boite:focus-within::after { transform: scaleX(1); }
+
+  input[type="text"], input[type="email"], input[type="tel"], textarea, select {
+    width: 100%;
+    font-family: var(--body);
+    font-size: 16px;
+    color: var(--creme);
+    background: var(--fond);
+    border: 1px solid rgba(166, 255, 77, 0.2);
+    border-radius: 12px;
+    padding: 15px 16px;
+    transition: border-color 0.3s ease, background 0.3s ease, box-shadow 0.3s ease;
+  }
+  select {
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 44px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23a6ff4d' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--vert);
+    background-color: var(--fond-2);
+    box-shadow: 0 0 0 4px var(--vert-dim);
+    outline: none;
+  }
+  textarea { min-height: 104px; resize: vertical; }
+  input::placeholder, textarea::placeholder { color: rgba(185, 194, 170, 0.42); }
+
+  .aide { font-size: 13px; color: var(--muet-2); margin-top: 8px; }
+
+  .erreur { display: none; font-size: 13px; color: var(--rouge); margin-top: 7px; }
+  .champ.invalide .erreur { display: block; animation: leve 0.4s ease both; }
+  .champ.invalide input, .champ.invalide textarea, .champ.invalide select, .champ.invalide .choix, .champ.invalide .consentement { border-color: var(--rouge); }
+  .champ.invalide { animation: tremble 0.45s ease; }
+  @keyframes tremble {
+    0%, 100% { transform: translateX(0); }
+    22%      { transform: translateX(-5px); }
+    58%      { transform: translateX(4px); }
+    82%      { transform: translateX(-2px); }
+  }
+
+  /* Choix */
+  .choix-groupe { display: grid; gap: 10px; }
+  .choix {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: var(--fond);
+    border: 1px solid rgba(166, 255, 77, 0.2);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s var(--doux);
+  }
+  .choix:hover { border-color: var(--vert); transform: translateX(3px); }
+  .choix input { margin-top: 3px; accent-color: var(--vert); width: 17px; height: 17px; flex-shrink: 0; }
+  .choix .txt { font-size: 15px; color: var(--creme); }
+  .choix .txt small { display: block; font-size: 13px; color: var(--muet); margin-top: 3px; }
+  .choix.actif { border-color: var(--vert); background: var(--vert-dim); }
+
+  .consentement {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-size: 14.5px;
+    color: var(--creme);
+    background: rgba(166, 255, 77, 0.06);
+    border: 1px solid var(--bord);
+    border-radius: 14px;
+    padding: 16px 18px;
+    cursor: pointer;
+  }
+  .consentement input { margin-top: 3px; accent-color: var(--vert); width: 17px; height: 17px; flex-shrink: 0; }
+  .consentement small { display: block; font-size: 12.5px; color: var(--muet); margin-top: 4px; }
+  .consentement + .consentement { margin-top: 10px; }
+
+  .bouton { display: block; width: 100%; text-align: center; margin-top: 28px; padding: 20px; }
+  .bouton:disabled { opacity: 0.55; cursor: wait; }
+  a.bouton { margin-top: 0; }
+
+  .flow-etape { display: none; }
+  .flow-etape.visible { display: block; animation: entre 0.7s var(--doux); }
+  .flow-etape.sort { display: block; animation: sort 0.34s ease forwards; }
+  @keyframes entre {
+    from { opacity: 0; transform: translateY(22px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes sort {
+    from { opacity: 1; transform: translateY(0); }
+    to   { opacity: 0; transform: translateY(-16px); }
+  }
+
+  .progression { display: flex; gap: 6px; justify-content: center; margin-bottom: 26px; }
+  .progression i {
+    width: 22px; height: 2px;
+    border-radius: 2px;
+    background: rgba(166, 255, 77, 0.16);
+    transition: background 0.5s ease, width 0.5s var(--doux), box-shadow 0.5s ease;
+  }
+  .progression i.active { background: var(--vert); width: 34px; box-shadow: 0 0 8px rgba(166, 255, 77, 0.6); }
+
+  .sceau { text-align: center; margin-bottom: 16px; }
+  .sceau svg { overflow: visible; }
+  .sceau circle, .sceau path {
+    fill: none;
+    stroke: var(--vert);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+  }
+  .sceau path { stroke: var(--creme); stroke-width: 2.2; }
+  .flow-etape.visible .sceau circle { animation: tracer 1.2s var(--doux) 0.2s forwards; }
+  .flow-etape.visible .sceau path { animation: tracer 0.6s ease 1.05s forwards; }
+  @keyframes tracer { to { stroke-dashoffset: 0; } }
+
+  .confirmation-titre {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(34px, 7vw, 48px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .confirmation-texte {
+    text-align: center;
+    font-size: 15px;
+    color: var(--muet);
+    max-width: 440px;
+    margin: 0 auto 26px;
+  }
+
+  /* Le lien de la visio, ou l'attente si le lien n'est pas encore connu */
+  .conf-visio {
+    text-align: center;
+    font-size: 15.5px;
+    color: var(--creme);
+    background: var(--vert-dim);
+    border: 1px solid var(--bord);
+    border-radius: 14px;
+    padding: 16px 20px;
+    max-width: 440px;
+    margin: 0 auto 20px;
+  }
+  .conf-visio a {
+    display: block;
+    margin-top: 4px;
+    font-weight: 700;
+    font-size: 17px;
+    color: var(--vert);
+    text-decoration: none;
+    letter-spacing: 0.02em;
+  }
+  .conf-visio a:hover { text-decoration: underline; text-underline-offset: 3px; }
+  .conf-attente {
+    text-align: center;
+    font-size: 14.5px;
+    color: var(--muet);
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 14px;
+    padding: 14px 18px;
+    max-width: 440px;
+    margin: 0 auto 20px;
+  }
+  .conf-attente strong { color: var(--creme); }
+
+  .agenda { text-align: center; margin: 0 auto 26px; }
+  .lien-agenda {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--creme);
+    text-decoration: none;
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 100px;
+    padding: 13px 24px;
+    transition: border-color 0.3s ease, background 0.3s ease, transform 0.3s var(--doux);
+  }
+  .lien-agenda:hover {
+    border-color: var(--vert);
+    background: var(--vert-dim);
+    transform: translateY(-2px);
+  }
+  .lien-agenda svg { flex-shrink: 0; }
+  .lien-agenda svg * {
+    fill: none;
+    stroke: var(--vert);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+  }
+  .agenda .secondaire {
+    display: block;
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: var(--muet);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .agenda .secondaire:hover { color: var(--vert); }
+
+  .separateur { border: none; border-top: 1px solid var(--bord); margin: 34px auto; width: 60px; }
+
+  /* La suite, sur l'écran de confirmation : l'appel avec Lucas */
+  .suite {
+    background: linear-gradient(168deg, var(--panneau) 0%, var(--fond-2) 100%);
+    border: 1px solid var(--bord);
+    border-radius: 20px;
+    padding: 26px 24px;
+    text-align: center;
+  }
+  .suite h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: 27px;
+    line-height: 1.12;
+    margin-bottom: 8px;
+  }
+  .suite h3 em { font-style: italic; color: var(--vert); }
+  .suite p { font-size: 14.5px; color: var(--muet); max-width: 420px; margin: 0 auto 18px; }
+  .suite .cta { padding: 16px 28px; }
+
+  .rappel-final {
+    text-align: center;
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 16px;
+    padding: 22px 24px;
+    margin-top: 28px;
+    font-size: 15px;
+    color: var(--muet);
+  }
+  .rappel-final strong { color: var(--creme); }
+
+  /* ====================================================================
+     09 · BARRE CTA COLLANTE
+  ==================================================================== */
+  .barre {
+    position: fixed;
+    left: 0; right: 0; bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 12px 18px calc(12px + env(safe-area-inset-bottom));
+    background: rgba(6, 10, 4, 0.9);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--bord);
+    transform: translateY(105%);
+    transition: transform 0.6s var(--doux);
+  }
+  .barre.montre { transform: translateY(0); }
+  .barre .info {
+    min-width: 0;
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--creme);
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .barre .info small {
+    display: block;
+    font-family: var(--body);
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    text-transform: none;
+    font-size: 12px;
+    color: var(--muet);
+  }
+  .barre .bascule { display: inline-block; }
+  .barre .bascule.change { animation: bascule 0.5s var(--doux); }
+  @keyframes bascule {
+    0%   { transform: translateY(0); opacity: 1; }
+    45%  { transform: translateY(-7px); opacity: 0; }
+    55%  { transform: translateY(7px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+  .barre .cta { padding: 14px 22px; font-size: 11.5px; letter-spacing: 0.12em; white-space: nowrap; }
+
+  /* ====================================================================
+     10 · RÉVÉLATION AU SCROLL & CARTES QUI S'INCLINENT
+  ==================================================================== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition: opacity 1s var(--doux), transform 1s var(--doux);
+  }
+  .reveal.vu { opacity: 1; transform: translateY(0); }
+
+  .inclinable { transition: transform 0.5s var(--doux); transform-style: preserve-3d; will-change: transform; }
+
+  footer {
+    text-align: center;
+    font-size: 11.5px;
+    letter-spacing: 0.04em;
+    color: var(--muet);
+    margin-top: 60px;
+    padding-top: 26px;
+    border-top: 1px solid var(--bord);
+  }
+  footer a { color: var(--muet); }
+  footer .marque-pied {
+    width: 28px;
+    height: auto;
+    display: block;
+    margin: 0 auto 14px;
+    opacity: 0.6;
+    animation: respire-mini 11s ease-in-out infinite;
+  }
+  footer .devise {
+    margin-top: 8px;
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--vert-texte);
+  }
+
+  /* ====================================================================
+     11 · MENTIONS LÉGALES ET CONFIDENTIALITÉ
+  ==================================================================== */
+  .modale {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.62);
+    backdrop-filter: blur(5px);
+    animation: fondu 0.35s ease;
+  }
+  .modale[hidden] { display: none; }
+  @keyframes fondu { from { opacity: 0; } to { opacity: 1; } }
+
+  .modale-panneau {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: 88vh;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 24px;
+    padding: 40px 30px 44px;
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
+    animation: monte-modale 0.45s var(--doux);
+  }
+  @keyframes monte-modale {
+    from { opacity: 0; transform: translateY(26px) scale(0.985); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .modale-fermer {
+    position: sticky;
+    top: 0;
+    float: right;
+    width: 34px; height: 34px;
+    display: grid;
+    place-items: center;
+    font-size: 20px;
+    line-height: 1;
+    color: var(--creme);
+    background: var(--fond);
+    border: 1px solid var(--bord);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.25s ease, transform 0.25s var(--doux);
+  }
+  .modale-fermer:hover { background: var(--vert-dim); transform: rotate(90deg); }
+
+  .modale h2 {
+    font-family: var(--display);
+    font-weight: 400;
+    font-size: clamp(28px, 5.6vw, 36px);
+    line-height: 1.1;
+    margin-bottom: 6px;
+  }
+  .modale h3 {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--vert);
+    margin: 28px 0 9px;
+  }
+  .modale h2 + h3 { margin-top: 22px; }
+  .modale p, .modale li { font-size: 14.5px; color: var(--muet); }
+  .modale p + p { margin-top: 9px; }
+  .modale ul { margin: 9px 0 0 18px; }
+  .modale li { margin-bottom: 7px; }
+  .modale strong { color: var(--creme); }
+  .modale a { color: var(--vert); }
+  .modale .maj {
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--bord);
+    font-size: 12.5px;
+  }
+  /* Les champs à compléter avant diffusion, impossibles à rater */
+  .modale .aremplir {
+    background: rgba(255, 215, 106, 0.16);
+    border-bottom: 1px dashed var(--or);
+    color: var(--creme);
+    padding: 0 3px;
+    border-radius: 3px;
+  }
+
+  .mention-rgpd {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--muet-2);
+    text-align: center;
+    margin-top: 16px;
+  }
+  .mention-rgpd a { color: var(--muet); text-underline-offset: 2px; }
+
+  /* ---------- Bannière de consentement (n'existe que si pixel configuré) ---------- */
+  .bandeau-consent {
+    position: fixed;
+    left: 16px; right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    z-index: 60;
+    max-width: 430px;
+    margin: 0 auto;
+    background: var(--panneau);
+    border: 1px solid var(--bord);
+    border-radius: 16px;
+    padding: 16px 18px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+    animation: leve 0.7s var(--doux);
+  }
+  .bandeau-consent p { font-size: 13.5px; line-height: 1.55; color: var(--muet); margin-bottom: 12px; }
+  .bandeau-consent a { color: var(--vert); }
+  .consent-boutons { display: flex; gap: 10px; justify-content: flex-end; }
+  .consent-boutons button {
+    font-family: var(--body);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    border-radius: 9px;
+    padding: 10px 16px;
+    cursor: pointer;
+  }
+  .consent-non { background: var(--fond); color: var(--muet); border: 1px solid var(--bord); }
+  .consent-oui { background: var(--vert); color: var(--encre); border: none; }
+
+  /* ---------- Mouvement réduit : tout se pose, rien ne bouge ---------- */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+    .voile { display: none; }
+    .reveal, .apparait, .marque, .globe { opacity: 1; transform: none; filter: none; }
+    .globe { transform: translate(-50%, -50%); }
+    .ligne > span { transform: none; }
+    .titre-section .trait, .boite::after { transform: scaleX(1); }
+    .boite::after { display: none; }
+    .pastille circle, .sceau circle, .sceau path, .courbe path { stroke-dashoffset: 0; }
+    .courbe circle, .pastille em, .citation .mot-a-mot, .titre-section h2 .l, .note .prompt { opacity: 1; transform: none; }
+    .pour-qui .puce { background: var(--vert); }
+    .fil, .poussieres, .scan, .jauge, .halo-curseur, .onde { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="voile" id="voile" aria-hidden="true"></div>
+<div class="jauge" id="jauge" aria-hidden="true"></div>
+<div class="grille" aria-hidden="true"></div>
+<div class="aura aura-a" aria-hidden="true"></div>
+<div class="aura aura-b" aria-hidden="true"></div>
+<div class="halo-curseur" id="halo-curseur" aria-hidden="true"></div>
+<div class="scan" aria-hidden="true"></div>
+<div class="poussieres" id="poussieres" aria-hidden="true"></div>
+
+<div class="page">
+  <div class="fil" id="fil" aria-hidden="true"></div>
+
+  <div class="rail">
+    <span class="rail-gauche">
+      <img class="marque-mini" src="assets/logo.png" alt="" aria-hidden="true" onerror="this.remove()">
+      <span>Leads and Business</span>
+    </span>
+    <span class="rail-droite" data-config="date-courte">Live · 15 septembre</span>
+  </div>
+
+  <!-- ============================ HERO ============================ -->
+  <header id="hero">
+    <div class="globe" id="souffle" aria-hidden="true">
+      <svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="halo-vert" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stop-color="#a6ff4d" stop-opacity="0.10"/>
+            <stop offset="55%" stop-color="#a6ff4d" stop-opacity="0.04"/>
+            <stop offset="100%" stop-color="#a6ff4d" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+        <circle class="halo-globe" cx="120" cy="120" r="118"/>
+        <circle class="contour" cx="120" cy="120" r="100"/>
+        <ellipse class="lat" cx="120" cy="120" rx="100" ry="34"/>
+        <ellipse class="lat" cx="120" cy="120" rx="100" ry="70"/>
+        <ellipse class="mer m1" cx="120" cy="120" rx="100" ry="100"/>
+        <ellipse class="mer m2" cx="120" cy="120" rx="100" ry="100"/>
+        <ellipse class="mer m3" cx="120" cy="120" rx="100" ry="100"/>
+      </svg>
+    </div>
+
+    <div class="onde" aria-hidden="true"><i></i><i></i><i></i></div>
+
+    <div class="marque">
+      <img id="logo-lnb" src="assets/logo.png" alt="Leads and Business" onerror="this.style.display='none'">
+      <span class="marque-nom">Leads <em>and</em> Business</span>
+    </div>
+
+    <div class="badge-date apparait d2">
+      <span class="point"></span>
+      <span>Live gratuit · <span data-config="date">Mardi 15 septembre</span> · <span data-config="heure">17h00</span></span>
+      <span class="compte" id="compte-a-rebours" hidden></span>
+    </div>
+
+    <h1>
+      <span class="ligne"><span>Un freelance.</span></span>
+      <span class="ligne"><span>Un vrai blocage.</span></span>
+      <span class="ligne"><span><em>Lucas le règle,</em></span></span>
+      <span class="ligne"><span><em>en direct.</em></span></span>
+    </h1>
+
+    <p class="sous-titre apparait d3">Chaque semaine, Lucas prend un freelance de la communauté et travaille avec lui sur ce qui coince vraiment dans son business : positionnement, prospection, TJM, pipeline. Tu regardes et tu prends ce qui s'applique à toi. Ou tu proposes ton cas.</p>
+    <p class="animatrice apparait d4">Un live gratuit animé par <strong>Lucas Fabre</strong>, fondateur de Leads and Business. Freelance depuis 14 ans, 200+ freelances accompagnés.</p>
+
+    <a href="#inscription" class="cta cta-hero" data-magnetique>Je réserve ma place</a>
+    <p class="rassurance apparait d5">Gratuit · En ligne · Un nouveau cas chaque semaine</p>
+  </header>
+
+  <!-- ============================ POUR QUI ============================ -->
+  <section class="section" aria-label="À qui s'adresse ce live">
+    <div class="titre-section reveal">
+      <h2 data-lettres>Pour toi si</h2>
+      <span class="trait"></span>
+    </div>
+    <ul class="pour-qui">
+      <li class="reveal"><span class="puce"></span><span>Tu es freelance (dev, design, data, conseil), tu vis de ton expertise, et ton chiffre fait le yoyo : <strong>un mois plein, un mois creux</strong>.</span></li>
+      <li class="reveal"><span class="puce"></span><span>Tu sais que quelque chose coince, ta prospection, ton TJM, ton positionnement, mais <strong>tu tournes en rond seul</strong> devant ton écran.</span></li>
+      <li class="reveal"><span class="puce"></span><span>Tu veux voir <strong>comment ça se règle sur un vrai cas</strong>. Pas la théorie : les chiffres, les décisions, et ce que ça change dans les deux semaines qui suivent.</span></li>
+    </ul>
+  </section>
+
+  <!-- ============================ DÉROULÉ ============================ -->
+  <section class="section" aria-label="Le déroulé du live">
+    <div class="titre-section reveal">
+      <h2 data-lettres>Ce qui va se passer</h2>
+      <span class="trait"></span>
+    </div>
+
+    <div class="deroule reveal inclinable">
+      <div class="etape">
+        <span class="pastille">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" pathLength="100"/></svg>
+          <em>01</em>
+        </span>
+        <div>
+          <h3>Le cas</h3>
+          <p>Un freelance de la communauté présente son business et son blocage n°1. Ses vrais chiffres, sa vraie situation, pas un cas d'école.</p>
+        </div>
+      </div>
+
+      <div class="etape">
+        <span class="pastille">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" pathLength="100"/></svg>
+          <em>02</em>
+        </span>
+        <div>
+          <h3>Le coaching</h3>
+          <p>Lucas travaille dessus en direct : diagnostic, décisions, et un plan d'action concret pour les deux semaines qui suivent. Après chaque décision, il explique pourquoi celle-là.</p>
+        </div>
+      </div>
+
+      <div class="etape">
+        <span class="pastille">
+          <svg viewBox="0 0 44 44" aria-hidden="true"><circle cx="22" cy="22" r="21" pathLength="100"/></svg>
+          <em>03</em>
+        </span>
+        <div>
+          <h3>Tes questions</h3>
+          <p>Un temps de questions en fin de live, sur le cas du jour ou sur ta propre situation.</p>
+        </div>
+      </div>
+
+      <div class="note">
+        <span class="prompt" aria-hidden="true">&gt;_</span>
+        <span>
+          <strong>Tu peux venir juste pour regarder.</strong>
+          Personne n'est coaché en direct sans avoir candidaté pour ça. Caméra et micro restent fermés si tu le souhaites.
+        </span>
+      </div>
+      <div class="note">
+        <span class="prompt" aria-hidden="true">&gt;_</span>
+        <span>
+          <strong>Un nouveau cas chaque semaine.</strong>
+          Une inscription vaut pour une session. Tu te réinscris pour les suivantes, en trente secondes.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ LE MOT DE LUCAS ============================ -->
+  <section class="section" aria-label="Le mot de Lucas">
+    <div class="mot reveal inclinable">
+      <div class="portrait">
+        <img id="photo-lucas" src="assets/lucas.jpg" alt="Lucas Fabre, fondateur de Leads and Business">
+        <span class="initiale" id="initiale-lucas" aria-hidden="true" style="display:none;">L</span>
+      </div>
+      <div>
+        <p>« Je suis freelance depuis 14 ans. J'ai connu les mois à zéro et les mois où je refusais des missions. Ce que j'ai fini par comprendre, c'est que le problème n'est presque jamais la compétence. C'est tout ce qu'il y a autour : à qui tu t'adresses, comment tu te montres, comment tu vends.</p>
+        <p>Ce live, c'est ça. Chaque semaine, un freelance, son vrai blocage, et on le règle devant toi. Sans slides, sans discours. Ce que tu vois, tu peux l'appliquer le soir même. »</p>
+        <p class="signature">Lucas</p>
+        <p class="qui">Fondateur de Leads and Business</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================ PREUVE ============================ -->
+  <section class="section preuves" aria-label="Ils sont passés par là">
+    <div class="courbe" aria-hidden="true">
+      <svg viewBox="0 0 200 70" width="200" height="70" xmlns="http://www.w3.org/2000/svg">
+        <path pathLength="100" d="M4 54 L28 34 L50 58 L72 38 L94 50 L116 26 L138 32 L160 14 L196 8"/>
+        <circle cx="196" cy="8" r="3"/>
+      </svg>
+    </div>
+
+    <div class="titre-section centre reveal">
+      <span class="trait"></span>
+      <h2 data-lettres>Ils sont passés par là</h2>
+      <span class="trait"></span>
+    </div>
+
+    <blockquote class="citation reveal">« Mieux me positionner, mettre en place une prospection continue, communiquer de manière plus impactante. <em>Et ce n'est qu'un aperçu.</em> »</blockquote>
+    <p class="citation-source reveal">Matthieu, développeur React / Next.js · <b>+160 K€ en 2025</b></p>
+
+    <div class="chiffres reveal">
+      <div><b>200+</b><span>freelances accompagnés</span></div>
+      <div><b>2,3 M€</b><span>de CA générés par les élèves</span></div>
+      <div><b>96 %</b><span>de satisfaction</span></div>
+    </div>
+
+    <div class="videos reveal" id="videos-temoignages"></div>
+  </section>
+
+  <!-- ============================ LE MENTORAT, EN BREF ============================ -->
+  <section class="section" aria-label="Et après le live">
+    <div class="titre-section reveal">
+      <h2 data-lettres>Et après le live</h2>
+      <span class="trait"></span>
+    </div>
+
+    <div class="mentorat reveal">
+      <div class="mentorat-chiffres">
+        <div><b>90</b><span>jours</span></div>
+        <div><b>6</b><span>sprints</span></div>
+        <div><b>1:1</b><span>illimité</span></div>
+      </div>
+      <ul>
+        <li><strong>Leads and Business, c'est le mentorat de Lucas.</strong> 90 jours, 6 sprints de 2 semaines, pour construire ton système d'acquisition : positionnement, offre, prospection, contenus, conversion, pilotage.</li>
+        <li><strong>Humain, pas une formation en ligne.</strong> Appels de 15 minutes illimités, appel d'étape toutes les 2 semaines, un live de groupe par semaine, et une communauté qui s'envoie des missions.</li>
+        <li><strong>Garantie écrite.</strong> Un objectif fixé au départ. Pas atteint, remboursé.</li>
+      </ul>
+      <p class="voir">
+        <a class="lien-agenda" data-config="lp" href="https://leads-and-business-lp.vercel.app" target="_blank" rel="noopener">
+          Voir le mentorat en détail
+        </a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================ FLOW D'INSCRIPTION ============================ -->
+  <div class="carte reveal" id="inscription">
+
+    <div class="progression" id="progression" aria-hidden="true">
+      <i class="active"></i><i></i><i></i>
+    </div>
+
+    <!-- ÉTAPE 1 : optin -->
+    <section class="flow-etape visible" id="etape-optin" aria-label="Inscription au live">
+      <h2>Réserve <em>ta place</em></h2>
+      <p class="intro">C'est gratuit, et ça se vit en direct : <strong><span data-config="date">mardi 15 septembre</span> à <span data-config="heure">17h00</span></strong>.</p>
+
+      <div class="champ" id="champ-prenom">
+        <label class="etiquette" for="prenom">Ton prénom</label>
+        <div class="boite"><input type="text" id="prenom" name="prenom" autocomplete="given-name" placeholder="Prénom"></div>
+        <p class="erreur">Il nous faut ton prénom.</p>
+      </div>
+
+      <div class="champ" id="champ-email">
+        <label class="etiquette" for="email">Ton e-mail</label>
+        <div class="boite"><input type="email" id="email" name="email" autocomplete="email" placeholder="prenom@exemple.com"></div>
+        <p class="erreur">Cet e-mail ne semble pas valide.</p>
+      </div>
+
+      <div class="champ" id="champ-tel">
+        <label class="etiquette" for="tel">Ton numéro de téléphone</label>
+        <div class="boite"><input type="tel" id="tel" name="tel" autocomplete="tel" placeholder="06 12 34 56 78"></div>
+        <p class="aide">Le rappel et le lien du live arrivent sur WhatsApp juste avant le début. C'est le moyen le plus sûr de ne pas le rater.</p>
+        <p class="erreur">Ce numéro ne semble pas valide.</p>
+      </div>
+
+      <div class="champ" id="champ-mode">
+        <label class="etiquette">Comment tu veux participer ?</label>
+        <div class="choix-groupe" role="radiogroup">
+          <label class="choix">
+            <input type="radio" name="mode" value="assister">
+            <span class="txt">Je viens assister au live</span>
+          </label>
+          <label class="choix">
+            <input type="radio" name="mode" value="coaching">
+            <span class="txt">Je propose mon cas pour être coaché en direct par Lucas
+              <small>Quelques questions sur ton business juste après, 3 minutes.</small>
+            </span>
+          </label>
+        </div>
+        <p class="erreur">Choisis l'une des deux options.</p>
+      </div>
+
+      <button class="cta bouton" id="btn-optin" type="button">Je réserve ma place</button>
+      <p class="mention-rgpd">En validant, tu acceptes que Lucas utilise ces informations pour t'envoyer le lien du live et les rappels. Tu peux demander leur suppression à tout moment. <a href="#" data-ouvre-legal>Politique de confidentialité</a>.</p>
+    </section>
+
+    <!-- ÉTAPE 2 : candidature coaching live -->
+    <section class="flow-etape" id="etape-candidature" aria-label="Candidature au coaching en direct">
+      <h2>Ton <em>cas</em></h2>
+      <p class="intro">Ces réponses servent uniquement à Lucas pour choisir le cas de la session et préparer le coaching. Sois concret : des chiffres, des situations.</p>
+
+      <div class="champ" id="champ-profil">
+        <label class="etiquette" for="profil">Tu es plutôt</label>
+        <div class="boite">
+          <select id="profil" name="profil">
+            <option value="" selected disabled>Choisis ce qui te décrit le mieux</option>
+            <option>Développeur / profil tech</option>
+            <option>Design, marketing ou création de contenu</option>
+            <option>Consultant / autre expertise</option>
+            <option>En train de me lancer</option>
+          </select>
+        </div>
+        <p class="erreur">Choisis une réponse.</p>
+      </div>
+
+      <div class="champ" id="champ-business">
+        <label class="etiquette" for="business">Ton business en quelques lignes <small>Que vends-tu, à qui, et sous quel format ?</small></label>
+        <div class="boite"><textarea id="business" name="business" placeholder="Ex. : dev React freelance, missions longues en ESN, TJM 450 €, deux clients actifs."></textarea></div>
+        <p class="erreur">Décris ton business en une ou deux phrases.</p>
+      </div>
+
+      <div class="champ" id="champ-blocage1">
+        <label class="etiquette" for="blocage1">Ton blocage n°1</label>
+        <div class="boite"><textarea id="blocage1" name="blocage1" placeholder="Le plus précis possible : une scène, un moment, un chiffre."></textarea></div>
+        <p class="erreur">Dis-nous ce qui coince en premier.</p>
+      </div>
+
+      <div class="champ" id="champ-blocage2">
+        <label class="etiquette" for="blocage2">Ton blocage n°2 <small>Facultatif</small></label>
+        <div class="boite"><textarea id="blocage2" name="blocage2" style="min-height:74px;"></textarea></div>
+      </div>
+
+      <div class="champ" id="champ-blocage3">
+        <label class="etiquette" for="blocage3">Ton blocage n°3 <small>Facultatif</small></label>
+        <div class="boite"><textarea id="blocage3" name="blocage3" style="min-height:74px;"></textarea></div>
+      </div>
+
+      <div class="champ" id="champ-objectif">
+        <label class="etiquette" for="objectif">Quel objectif tu veux atteindre dans ton business ? <small>Le résultat concret visé, et ton échéance.</small></label>
+        <div class="boite"><textarea id="objectif" name="objectif" placeholder="Ex. : 8 K€ par mois réguliers d'ici décembre, sans passer par les plateformes."></textarea></div>
+        <p class="erreur">Un résultat et une échéance, même approximatifs.</p>
+      </div>
+
+      <div class="champ" id="champ-ca">
+        <label class="etiquette" for="ca">Ton chiffre d'affaires mensuel actuel <small>Moyenne des 3 derniers mois. Indique 0 si tu démarres.</small></label>
+        <div class="boite"><input type="text" id="ca" name="ca" inputmode="decimal" placeholder="Ex. : 4 500 €"></div>
+        <p class="erreur">Un montant, même approximatif (0 si tu démarres).</p>
+      </div>
+
+      <div class="champ" id="champ-accord">
+        <label class="consentement">
+          <input type="checkbox" id="accord" name="accord">
+          <span>Je suis d'accord pour être coaché en direct, devant les autres participants.</span>
+        </label>
+        <label class="consentement">
+          <input type="checkbox" id="droits" name="droits">
+          <span>J'autorise Leads and Business à enregistrer mon image, ma voix et mon intervention, et à en utiliser des extraits pour présenter ses coachings sur son site, ses réseaux et ses publicités.
+            <small>Facultatif. Les informations sensibles de ton business (noms de clients, coordonnées, données financières détaillées) sont anonymisées dans tout extrait diffusé. Ne partage aucun mot de passe ni donnée confidentielle de tiers.</small>
+          </span>
+        </label>
+        <p class="erreur">La première case est nécessaire pour proposer ton cas.</p>
+      </div>
+
+      <button class="cta bouton" id="btn-candidature" type="button">J'envoie mon cas</button>
+      <p class="mention-rgpd">Le passage en direct n'est pas garanti : Lucas choisit le cas de chaque session. Tu recevras un message dans tous les cas.</p>
+    </section>
+
+    <!-- ÉTAPE 3 : confirmation -->
+    <section class="flow-etape" id="etape-fin" aria-label="Confirmation">
+      <div class="sceau" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="54" height="54" xmlns="http://www.w3.org/2000/svg">
+          <circle pathLength="100" cx="32" cy="32" r="28"/>
+          <path pathLength="100" d="M21 33 L29 41 L44 25"/>
+        </svg>
+      </div>
+      <h2 class="confirmation-titre">C'est noté<span id="conf-prenom"></span></h2>
+      <p class="confirmation-texte" id="conf-texte"></p>
+
+      <p class="conf-visio" data-visio-bloc hidden>Ton lien pour nous rejoindre <span data-config="jour-heure">mardi à 17h00</span>&#8239;:
+        <a data-config="visio" href="#" target="_blank" rel="noopener">Rejoindre le live</a></p>
+      <p class="conf-attente" data-visio-attente><strong>Le lien du live arrive sur WhatsApp et par e-mail</strong> juste avant le début. Ajoute la session à ton agenda pour ne pas la rater.</p>
+
+      <div class="agenda" data-agenda>
+        <a class="lien-agenda" data-agenda-google target="_blank" rel="noopener">
+          <svg width="17" height="17" viewBox="0 0 24 24" aria-hidden="true">
+            <rect x="3" y="5" width="18" height="16" rx="3"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <line x1="8" y1="3" x2="8" y2="7"/>
+            <line x1="16" y1="3" x2="16" y2="7"/>
+          </svg>
+          Ajouter à mon Google Agenda
+        </a>
+        <a class="secondaire" data-agenda-ics download="live-leads-and-business.ics">Apple Calendrier, Outlook : télécharger l'invitation</a>
+      </div>
+
+      <div id="bloc-communaute" style="display:none;">
+        <p class="confirmation-texte" style="margin-bottom:14px;">En attendant le live, tout se passe dans la communauté : les infos du live, les wins de la semaine et les échanges avec les autres freelances.</p>
+        <a class="cta bouton secondaire-btn" id="lien-communaute" href="#" target="_blank" rel="noopener">Je rejoins la communauté</a>
+      </div>
+
+      <hr class="separateur">
+
+      <div class="suite" data-suite>
+        <h3>Tu veux aller <em>plus vite</em> ?</h3>
+        <p>Réserve 30 minutes avec Lucas : un diagnostic de ton acquisition et ton plan 90 jours, que tu signes ou non. Tu parles à Lucas, pas à un commercial.</p>
+        <a class="cta secondaire-btn" data-config="appel" href="#" target="_blank" rel="noopener">Réserver 30 min avec Lucas</a>
+      </div>
+
+      <div class="rappel-final">
+        Rendez-vous <strong><span data-config="date">mardi 15 septembre</span> à <span data-config="heure">17h00</span></strong>.<br>
+        Le rappel arrive sur WhatsApp juste avant le début.
+      </div>
+    </section>
+
+  </div>
+
+  <footer>
+    <img class="marque-pied" src="assets/logo.png" alt="" aria-hidden="true" onerror="this.remove()">
+    <p>Leads and Business · Le live business gratuit, chaque semaine en ligne</p>
+    <p><a href="#" id="lien-mentions" data-ouvre-legal>Mentions légales et confidentialité</a></p>
+    <p class="devise">Des clients chaque mois, sans dépendre du bouche-à-oreille</p>
+  </footer>
+</div>
+
+<!-- ============================ BARRE CTA ============================ -->
+<div class="barre" id="barre">
+  <div class="info">
+    <span data-config="date-courte">Live · 15 septembre</span>
+    <small id="barre-compte">Gratuit, en ligne</small>
+  </div>
+  <a href="#inscription" class="cta" data-magnetique>Je réserve ma place</a>
+</div>
+
+<!-- ============ MENTIONS LÉGALES ET CONFIDENTIALITÉ ============
+     Les passages surlignés en jaune sont à compléter avant toute
+     diffusion publique. Cherche « aremplir » dans ce fichier.
+================================================================ -->
+<div class="modale" id="modale-legal" role="dialog" aria-modal="true" aria-labelledby="titre-legal" hidden>
+  <div class="modale-panneau">
+    <button class="modale-fermer" id="fermer-legal" type="button" aria-label="Fermer">&times;</button>
+
+    <h2 id="titre-legal">Mentions légales</h2>
+
+    <h3>Éditeur</h3>
+    <p>
+      Leads and Business · Lucas Fabre<br>
+      <span class="aremplir">forme juridique et capital</span><br>
+      <span class="aremplir">adresse du siège</span><br>
+      <span class="aremplir">SIRET · RCS · TVA intracommunautaire</span>
+    </p>
+    <p>Contact : <span class="aremplir">adresse e-mail de contact</span></p>
+    <p>Directeur de la publication : Lucas Fabre</p>
+
+    <h3>Hébergement</h3>
+    <p>Cette page est hébergée par GitHub Pages. GitHub&nbsp;Inc., 88 Colin P. Kelly Jr. Street, San Francisco, CA 94107, États-Unis.</p>
+
+    <h3>Propriété intellectuelle</h3>
+    <p>L'ensemble des contenus de cette page (textes, identité visuelle, logo Leads and Business, description de la méthode) est protégé par le droit d'auteur. Toute reproduction ou réutilisation, totale ou partielle, sans autorisation écrite préalable est interdite.</p>
+
+    <h2 style="margin-top:38px;">Politique de confidentialité</h2>
+
+    <h3>Qui traite tes données</h3>
+    <p>Lucas Fabre (Leads and Business), responsable de traitement, joignable à <span class="aremplir">adresse e-mail de contact</span>.</p>
+
+    <h3>Ce qu'on collecte, et pourquoi</h3>
+    <ul>
+      <li><strong>Ton prénom, ton e-mail et ton numéro de téléphone</strong> : pour t'inscrire au live, t'envoyer le lien de connexion et les rappels sur WhatsApp et par e-mail.</li>
+      <li><strong>Si tu proposes ton cas pour le coaching en direct</strong> : ton profil, la description de ton business, tes blocages, ton objectif, ton chiffre d'affaires mensuel, ton accord pour être coaché devant les autres participants et, si tu la donnes, ton autorisation d'enregistrement : pour permettre à Lucas de choisir le cas de la session et de préparer le coaching.</li>
+    </ul>
+    <p>Rien d'autre n'est collecté. Aucun profilage, aucune décision automatisée.</p>
+
+    <h3>Sur quelle base</h3>
+    <p>Ton consentement, donné en remplissant volontairement le formulaire. Tu peux le retirer à tout moment, sans avoir à te justifier : il suffit d'écrire à l'adresse de contact.</p>
+
+    <h3>Où vont ces informations</h3>
+    <p>Elles sont enregistrées dans un tableur Google Sheets privé, accessible uniquement à Lucas et à son équipe. L'hébergement est assuré par Google Ireland Limited ; des transferts hors Union européenne sont possibles, encadrés par les clauses contractuelles types de la Commission européenne.</p>
+    <p><strong>Tes données ne sont ni vendues, ni louées, ni transmises à des tiers</strong> à des fins commerciales ou publicitaires.</p>
+
+    <h3>Enregistrement du live</h3>
+    <p>Le coaching en direct peut être enregistré. Seules les personnes qui ont coché l'autorisation correspondante peuvent apparaître dans un extrait diffusé, et les informations sensibles de leur business y sont anonymisées. Les autres participants ne sont ni filmés ni cités.</p>
+
+    <h3>Combien de temps</h3>
+    <p>Elles sont conservées 24 mois après notre dernier échange, puis supprimées. Si tu demandes leur suppression, elle est effectuée sous 30 jours.</p>
+
+    <h3>Cookies et mesure d'audience</h3>
+    <p id="texte-cookies">Cette page <strong>ne dépose aucun cookie</strong> et n'utilise aucun outil de mesure d'audience, de publicité ou de suivi comportemental. Ta visite n'est pas tracée. C'est pour cette raison qu'aucune bannière de consentement ne t'est demandée.</p>
+
+    <h3>Tes droits</h3>
+    <p>Tu disposes d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et de portabilité sur tes données. Écris à <span class="aremplir">adresse e-mail de contact</span> : tu recevras une réponse sous un mois.</p>
+    <p>Si la réponse ne te convient pas, tu peux saisir la CNIL : <a href="https://www.cnil.fr" target="_blank" rel="noopener">cnil.fr</a>, 3 place de Fontenoy, 75007 Paris.</p>
+
+    <p class="maj">Dernière mise à jour : 10 septembre 2026.</p>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIG : la seule zone à modifier.
+   - DATE / HEURE / JOUR : affichés partout automatiquement.
+   - DATE_ISO : alimente le compte à rebours, l'agenda et la « session »
+     envoyée au Sheet (une ligne par personne et par session).
+     Le live est hebdomadaire : pour la session suivante, change DATE,
+     DATE_COURTE, JOUR et DATE_ISO, rien d'autre.
+   - WEBHOOK_URL : Apps Script « Live Leads and Business · Inscriptions »
+     (compte alexyoucompte99), écrit dans l'onglet Inscriptions du Sheet
+     en upsert sur e-mail + session. Vide = rien n'est envoyé (console).
+   - VISIO_URL : lien Zoom / Meet / Discord du live. Vide = l'écran de
+     confirmation dit que le lien arrive sur WhatsApp et par e-mail.
+   - COMMUNAUTE_URL : Discord ou WhatsApp. Vide = bloc masqué.
+   - APPEL_URL : la prise de rendez-vous avec Lucas (iClosed).
+   Champs envoyés : etape, session, prenom, email, tel, mode, profil,
+   business, blocage1, blocage2, blocage3, objectif, ca, accord, droits,
+   horodateur, source.
+===================================================================== */
+const CONFIG = {
+  DATE: "Mardi 15 septembre",
+  DATE_COURTE: "Live · 15 septembre",
+  JOUR: "mardi",
+  HEURE: "17h00",
+  DATE_ISO: "2026-09-15T17:00:00+02:00",
+  DUREE_MIN: 60, // durée du live, pour l'événement d'agenda
+  TITRE_AGENDA: "Live business Leads and Business avec Lucas Fabre",
+  DETAILS_AGENDA: "Chaque semaine, Lucas Fabre coache en direct un freelance de la communauté sur le vrai blocage de son business, puis répond à tes questions.\n\nLe lien de connexion arrive sur WhatsApp et par e-mail juste avant le début.",
+  WEBHOOK_URL: "https://script.google.com/macros/s/AKfycbym8yyDT7-8TsAsmdiAUeIVMIzwMyTs-ZZe4iM_XEY1WVPVj3Zf41dPiOftiJFS6047/exec",
+  VISIO_URL: "",
+  VISIO_LABEL: "Rejoindre le live",
+  COMMUNAUTE_URL: "",
+  APPEL_URL: "https://app.iclosed.io/e/lucasfabre/session-eval-mentorat",
+  LP_URL: "https://leads-and-business-lp.vercel.app",
+  // Pixel Meta pour le retargeting. Vide = aucun pixel, aucune bannière.
+  // Avec un ID, la bannière de consentement apparaît et le pixel ne se
+  // charge qu'après un « J'accepte ». L'inscription envoie l'événement Lead.
+  META_PIXEL_ID: "",
+  TEMOIGNAGES: [
+    { prenom: "Thibault", role: "Creative developer · CEO Pasokon Studio", resultat: "De 0 lead à 3 missions à +550 €/j", url: "https://media.shoutout.io/media/ugc/processed_video_BmxsqD8.mp4", poster: "assets/poster-thibault.jpg", ratio: "16 / 9" },
+    { prenom: "David", role: "CEO agence créative", resultat: "Studio lancé en 2 mois · missions à +500 €/j", url: "https://media.shoutout.io/media/ugc/processed_video_XHW8ZZ8.mp4", poster: "assets/poster-david.jpg", ratio: "16 / 9" },
+    { prenom: "Jérémie", role: "Senior frontend dev · DA", resultat: "TJM 630 € · 3+ missions", url: "https://media.shoutout.io/media/ugc/processed_video_fCLoyn6.mp4", poster: "assets/poster-jeremie.jpg", ratio: "16 / 9" },
+    { prenom: "Alexandre", role: "Développeur mobile", resultat: "1 an signé à 550 €/j", url: "https://media.shoutout.io/media/ugc/processed_video_jkECNRM.mp4", poster: "assets/poster-alexandre.jpg", ratio: "16 / 9" }
+  ]
+};
+
+const $ = id => document.getElementById(id);
+const mouvementReduit = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const pointeurFin = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+document.querySelectorAll('[data-config="date"]').forEach(el => el.textContent = CONFIG.DATE);
+document.querySelectorAll('[data-config="heure"]').forEach(el => el.textContent = CONFIG.HEURE);
+document.querySelectorAll('[data-config="date-courte"]').forEach(el => el.textContent = CONFIG.DATE_COURTE);
+document.querySelectorAll('[data-config="jour-heure"]').forEach(el => el.textContent = CONFIG.JOUR + ' à ' + CONFIG.HEURE);
+document.querySelectorAll('[data-config="lp"]').forEach(el => { if (CONFIG.LP_URL) el.href = CONFIG.LP_URL; else el.closest('.voir').remove(); });
+document.querySelectorAll('[data-config="appel"]').forEach(el => el.href = CONFIG.APPEL_URL);
+if (!CONFIG.APPEL_URL) document.querySelectorAll('[data-suite]').forEach(el => el.remove());
+
+if (CONFIG.VISIO_URL) {
+  document.querySelectorAll('[data-config="visio"]').forEach(el => { el.href = CONFIG.VISIO_URL; el.textContent = CONFIG.VISIO_LABEL || CONFIG.VISIO_URL.replace(/^https?:\/\//, ''); });
+  document.querySelectorAll('[data-visio-bloc]').forEach(el => el.hidden = false);
+  document.querySelectorAll('[data-visio-attente]').forEach(el => el.hidden = true);
+}
+
+if (CONFIG.COMMUNAUTE_URL) {
+  $('lien-communaute').href = CONFIG.COMMUNAUTE_URL;
+  $('bloc-communaute').style.display = 'block';
+}
+
+const conteneurVideos = $('videos-temoignages');
+if (CONFIG.TEMOIGNAGES.length) {
+  conteneurVideos.classList.toggle('multi', CONFIG.TEMOIGNAGES.length > 1);
+  CONFIG.TEMOIGNAGES.forEach(t => {
+    const fig = document.createElement('figure');
+    fig.className = 'video';
+    const v = document.createElement('video');
+    v.controls = true;
+    v.preload = 'none';
+    v.playsInline = true;
+    v.src = t.url;
+    if (t.poster) v.poster = t.poster;
+    if (t.ratio) v.style.setProperty('--ratio', t.ratio);
+    v.setAttribute('aria-label', 'Témoignage de ' + t.prenom);
+    const cap = document.createElement('figcaption');
+    const b = document.createElement('b'); b.textContent = t.prenom;
+    const s = document.createElement('span'); s.textContent = t.role || '';
+    const e = document.createElement('em'); e.textContent = t.resultat || '';
+    cap.append(b, s, e);
+    fig.append(v, cap);
+    conteneurVideos.appendChild(fig);
+  });
+  // Une seule vidéo à la fois : quand l'une démarre, les autres se taisent
+  conteneurVideos.addEventListener('play', e => {
+    conteneurVideos.querySelectorAll('video').forEach(v => { if (v !== e.target) v.pause(); });
+  }, true);
+} else {
+  conteneurVideos.remove();
+}
+
+/* ---------- État ---------- */
+const donnees = {
+  etape: "",
+  session: (CONFIG.DATE_ISO || "").slice(0, 10),
+  prenom: "", email: "", tel: "", mode: "",
+  profil: "", business: "", blocage1: "", blocage2: "", blocage3: "", objectif: "", ca: "",
+  accord: false, droits: false,
+  source: "lp-live-lnb-v1" + (location.search.match(/utm_[^&]+/g) ? " · " + location.search.match(/utm_[^&]+/g).join(" ") : "")
+};
+
+/* ---------- Navigation dans le flow ---------- */
+const RANG = { 'etape-optin': 0, 'etape-candidature': 1, 'etape-fin': 2 };
+
+function montrer(idEtape) {
+  const sortante = document.querySelector('.flow-etape.visible');
+  const entrante = $(idEtape);
+
+  function entrer() {
+    document.querySelectorAll('.flow-etape').forEach(s => s.classList.remove('visible', 'sort'));
+    entrante.classList.add('visible');
+    const rang = RANG[idEtape] || 0;
+    document.querySelectorAll('#progression i').forEach((p, i) => p.classList.toggle('active', i <= rang));
+    $('inscription').scrollIntoView({ behavior: mouvementReduit ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  if (sortante && sortante !== entrante && !mouvementReduit) {
+    sortante.classList.remove('visible');
+    sortante.classList.add('sort');
+    setTimeout(entrer, 300);
+  } else {
+    entrer();
+  }
+}
+
+function marquerErreur(idChamp, enErreur) {
+  const el = $(idChamp);
+  el.classList.remove('invalide');
+  if (enErreur) { void el.offsetWidth; el.classList.add('invalide'); } // relance le tremblement
+  return !enErreur;
+}
+
+function envoyer(etape) {
+  donnees.etape = etape;
+  donnees.horodateur = new Date().toISOString();
+  if (!CONFIG.WEBHOOK_URL) {
+    console.warn("WEBHOOK_URL non configurée. Données non envoyées :", JSON.parse(JSON.stringify(donnees)));
+    return Promise.resolve();
+  }
+  return fetch(CONFIG.WEBHOOK_URL, {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" }, // text/plain : évite le preflight CORS avec Apps Script
+    body: JSON.stringify(donnees)
+  }).catch(err => console.error("Envoi échoué :", err));
+}
+
+document.querySelectorAll('.choix input[type="radio"]').forEach(radio => {
+  radio.addEventListener('change', () => {
+    document.querySelectorAll('.choix input[name="' + radio.name + '"]').forEach(r => {
+      r.closest('.choix').classList.toggle('actif', r.checked);
+    });
+  });
+});
+
+function texteConfirmation(coaching) {
+  const quand = CONFIG.DATE.charAt(0).toLowerCase() + CONFIG.DATE.slice(1) + ' à ' + CONFIG.HEURE;
+  if (coaching) {
+    return "Ta place est réservée pour " + quand + ", et ton cas est bien reçu. Lucas choisit le cas coaché quelques jours avant le live : tu recevras un message dans tous les cas.";
+  }
+  return "Ta place est réservée pour " + quand + ".";
+}
+
+/* ---------- Étape 1 : optin ---------- */
+$('btn-optin').addEventListener('click', async () => {
+  const prenom = $('prenom').value.trim();
+  const email = $('email').value.trim();
+  const tel = $('tel').value.trim();
+  const mode = document.querySelector('input[name="mode"]:checked');
+
+  let ok = true;
+  ok = marquerErreur('champ-prenom', prenom.length < 2) && ok;
+  ok = marquerErreur('champ-email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) && ok;
+  ok = marquerErreur('champ-tel', tel.replace(/\D/g, '').length < 9) && ok;
+  ok = marquerErreur('champ-mode', !mode) && ok;
+  if (!ok) return;
+
+  donnees.prenom = prenom;
+  donnees.email = email;
+  donnees.tel = tel;
+  donnees.mode = mode.value;
+
+  const btn = $('btn-optin');
+  btn.disabled = true;
+  await envoyer('inscription');
+  btn.disabled = false;
+
+  // Pour le retargeting : Meta sait désormais que ce visiteur est inscrit,
+  // donc à EXCLURE des publicités de relance.
+  if (window.fbq) fbq('track', 'Lead');
+
+  if (mode.value === 'coaching') {
+    montrer('etape-candidature');
+  } else {
+    $('conf-prenom').textContent = ', ' + prenom;
+    $('conf-texte').textContent = texteConfirmation(false);
+    montrer('etape-fin');
+  }
+});
+
+/* ---------- Étape 2 : candidature coaching live ---------- */
+$('btn-candidature').addEventListener('click', async () => {
+  const profil = $('profil').value;
+  const business = $('business').value.trim();
+  const blocage1 = $('blocage1').value.trim();
+  const blocage2 = $('blocage2').value.trim();
+  const blocage3 = $('blocage3').value.trim();
+  const objectif = $('objectif').value.trim();
+  const ca = $('ca').value.trim();
+  const accord = $('accord').checked;
+  const droits = $('droits').checked;
+
+  let ok = true;
+  ok = marquerErreur('champ-profil', !profil) && ok;
+  ok = marquerErreur('champ-business', business.length < 10) && ok;
+  ok = marquerErreur('champ-blocage1', blocage1.length < 5) && ok;
+  ok = marquerErreur('champ-objectif', objectif.length < 5) && ok;
+  ok = marquerErreur('champ-ca', ca.length < 1) && ok;
+  ok = marquerErreur('champ-accord', !accord) && ok;
+  if (!ok) return;
+
+  donnees.profil = profil;
+  donnees.business = business;
+  donnees.blocage1 = blocage1;
+  donnees.blocage2 = blocage2;
+  donnees.blocage3 = blocage3;
+  donnees.objectif = objectif;
+  donnees.ca = ca;
+  donnees.accord = true;
+  donnees.droits = droits;
+
+  const btn = $('btn-candidature');
+  btn.disabled = true;
+  await envoyer('candidature_live');
+  btn.disabled = false;
+
+  $('conf-prenom').textContent = ', ' + donnees.prenom;
+  $('conf-texte').textContent = texteConfirmation(true);
+  montrer('etape-fin');
+});
+
+/* =====================================================================
+   MOTION
+===================================================================== */
+
+/* ---------- Le voile d'ouverture, puis l'entrée du hero ---------- */
+window.addEventListener('load', () => {
+  $('voile').classList.add('leve');
+  $('hero').classList.add('joue');
+});
+// Filet de sécurité : si `load` traîne (polices lentes), on ouvre quand même
+setTimeout(() => {
+  $('voile').classList.add('leve');
+  $('hero').classList.add('joue');
+}, 1600);
+
+/* ---------- Portrait : l'initiale si la photo manque ---------- */
+(function () {
+  const photo = $('photo-lucas'), initiale = $('initiale-lucas');
+  photo.addEventListener('error', () => { photo.style.display = 'none'; initiale.style.display = 'grid'; });
+})();
+
+/* ---------- Compte à rebours : jours dans le badge, détail dans la barre ---------- */
+(function () {
+  const badge = $('compte-a-rebours');
+  const ligne = $('barre-compte');
+  if (!CONFIG.DATE_ISO) return;
+  const cible = new Date(CONFIG.DATE_ISO);
+  if (isNaN(cible)) return;
+
+  let precedent = "";
+
+  function afficher() {
+    const restant = cible - new Date();
+
+    if (restant <= 0) {
+      badge.textContent = "En direct";
+      badge.hidden = false;
+      ligne.textContent = "C'est maintenant";
+      return;
+    }
+
+    const jours = Math.floor(restant / 86400000);
+    const heures = Math.floor((restant % 86400000) / 3600000);
+    const minutes = Math.floor((restant % 3600000) / 60000);
+
+    badge.textContent = jours > 0 ? ('J−' + jours) : (heures > 0 ? ('Dans ' + heures + 'h') : ('Dans ' + minutes + ' min'));
+    badge.hidden = false;
+
+    const texte = jours > 0
+      ? ('Dans ' + jours + ' jour' + (jours > 1 ? 's' : ''))
+      : ('Dans ' + heures + ' h ' + String(minutes).padStart(2, '0'));
+
+    if (texte !== precedent) {
+      precedent = texte;
+      ligne.innerHTML = '<span class="bascule">' + texte + '</span>';
+      if (!mouvementReduit) {
+        const b = ligne.firstChild;
+        b.classList.add('change');
+        b.addEventListener('animationend', () => b.classList.remove('change'), { once: true });
+      }
+    }
+  }
+  afficher();
+  setInterval(afficher, 30000);
+})();
+
+/* ---------- Compter les visites, sans rien pister ----------
+   Un POST anonyme vers le Sheet, une seule fois par session : date,
+   type d'appareil, page de provenance, campagne UTM. Pas d'IP côté
+   feuille, pas de cookie, pas d'identifiant : on compte, c'est tout. */
+(function () {
+  if (!CONFIG.WEBHOOK_URL) return;
+  try {
+    if (sessionStorage.getItem('lnb-visite')) return;
+    sessionStorage.setItem('lnb-visite', '1');
+  } catch (e) { /* navigation privée stricte : on comptera cette visite deux fois, tant pis */ }
+
+  const utm = (location.search.match(/utm_[^&]+/g) || []).join(' ');
+  fetch(CONFIG.WEBHOOK_URL, {
+    method: 'POST',
+    keepalive: true,
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({
+      etape: 'visite',
+      horodateur: new Date().toISOString(),
+      appareil: matchMedia('(pointer: coarse)').matches ? 'mobile' : 'ordinateur',
+      provenance: document.referrer || '',
+      utm: utm
+    })
+  }).catch(() => {});
+})();
+
+/* ---------- Pixel Meta, uniquement si configuré ET consenti ---------- */
+(function () {
+  if (!CONFIG.META_PIXEL_ID) return;
+
+  const CLE = 'lnb-consent-pixel';
+  let choix = null;
+  try { choix = localStorage.getItem(CLE); } catch (e) {}
+
+  function chargerPixel() {
+    if (window.fbq) return;
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', CONFIG.META_PIXEL_ID);
+    fbq('track', 'PageView');
+  }
+
+  // La politique de confidentialité doit dire la vérité : si le pixel est
+  // configuré, le paragraphe « aucun cookie » est remplacé.
+  const paragrapheCookies = document.getElementById('texte-cookies');
+  if (paragrapheCookies) {
+    paragrapheCookies.innerHTML = "Avec ton accord explicite (bannière en bas de page), cette page utilise le pixel Meta, un traceur de la société Meta Platforms Ireland Ltd, afin de mesurer les visites et de proposer des publicités pertinentes sur Facebook et Instagram. Il dépose des cookies et transmet des données de navigation à Meta, y compris hors Union européenne. Sans ton accord, aucun traceur n'est chargé et ta visite reste anonyme. Tu peux retirer ton accord à tout moment en effaçant les cookies de ton navigateur.";
+  }
+
+  if (choix === 'oui') { chargerPixel(); return; }
+  if (choix === 'non') return;
+
+  const b = document.createElement('div');
+  b.className = 'bandeau-consent';
+  b.setAttribute('role', 'dialog');
+  b.setAttribute('aria-label', 'Consentement aux cookies');
+  b.innerHTML = '<p>Avec ton accord, on utilise un traceur Meta pour te reproposer ce live si tu pars sans t\'inscrire. <a href="#" data-ouvre-legal>En savoir plus</a></p>'
+    + '<div class="consent-boutons"><button type="button" class="consent-non">Non merci</button>'
+    + '<button type="button" class="consent-oui">J\'accepte</button></div>';
+  document.body.appendChild(b);
+
+  b.querySelector('.consent-oui').addEventListener('click', () => {
+    try { localStorage.setItem(CLE, 'oui'); } catch (e) {}
+    chargerPixel();
+    b.remove();
+  });
+  b.querySelector('.consent-non').addEventListener('click', () => {
+    try { localStorage.setItem(CLE, 'non'); } catch (e) {}
+    b.remove();
+  });
+  const lien = b.querySelector('[data-ouvre-legal]');
+  lien.addEventListener('click', e => {
+    e.preventDefault();
+    const m = document.getElementById('modale-legal');
+    m.hidden = false;
+    document.body.style.overflow = 'hidden';
+  });
+})();
+
+/* ---------- Mentions légales : ouverture et fermeture ---------- */
+(function () {
+  const modale = $('modale-legal');
+  const fermer = $('fermer-legal');
+  let declencheur = null;
+
+  function ouvrir(e) {
+    e.preventDefault();
+    declencheur = e.currentTarget;
+    modale.hidden = false;
+    document.body.style.overflow = 'hidden';
+    fermer.focus();
+  }
+
+  function refermer() {
+    modale.hidden = true;
+    document.body.style.overflow = '';
+    if (declencheur) declencheur.focus();
+  }
+
+  document.querySelectorAll('[data-ouvre-legal]').forEach(a => a.addEventListener('click', ouvrir));
+  fermer.addEventListener('click', refermer);
+  modale.addEventListener('click', e => { if (e.target === modale) refermer(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && !modale.hidden) refermer(); });
+})();
+
+/* ---------- Ajouter le live à son agenda ----------
+   Les deux liens sont calculés depuis CONFIG.DATE_ISO et CONFIG.DUREE_MIN :
+   il n'y a jamais de date écrite en dur à re-corriger quelque part. */
+(function () {
+  if (!CONFIG.DATE_ISO) {
+    document.querySelectorAll('[data-agenda]').forEach(el => el.remove());
+    return;
+  }
+  const debut = new Date(CONFIG.DATE_ISO);
+  if (isNaN(debut)) {
+    document.querySelectorAll('[data-agenda]').forEach(el => el.remove());
+    return;
+  }
+  const fin = new Date(debut.getTime() + (CONFIG.DUREE_MIN || 60) * 60000);
+
+  // Format attendu par Google et par le .ics : 20260915T150000Z
+  const utc = d => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+
+  const titre = CONFIG.TITRE_AGENDA;
+  const details = CONFIG.DETAILS_AGENDA + (CONFIG.VISIO_URL ? "\n\nLien du live : " + CONFIG.VISIO_URL : "");
+  const lieu = CONFIG.VISIO_URL || "En ligne";
+
+  const google = 'https://calendar.google.com/calendar/render'
+    + '?action=TEMPLATE'
+    + '&text=' + encodeURIComponent(titre)
+    + '&dates=' + utc(debut) + '/' + utc(fin)
+    + '&details=' + encodeURIComponent(details)
+    + '&location=' + encodeURIComponent(lieu)
+    + '&ctz=Europe/Paris';
+
+  // Le .ics veut des vraies fins de ligne CRLF, sinon Apple Calendrier refuse
+  const ics = [
+    'BEGIN:VCALENDAR',
+    'VERSION:2.0',
+    'PRODID:-//Leads and Business//Live//FR',
+    'CALSCALE:GREGORIAN',
+    'METHOD:PUBLISH',
+    'BEGIN:VEVENT',
+    'UID:live-' + donnees.session + '@leads-and-business',
+    'DTSTAMP:' + utc(debut),
+    'DTSTART:' + utc(debut),
+    'DTEND:' + utc(fin),
+    'SUMMARY:' + titre,
+    'DESCRIPTION:' + details.replace(/\n/g, '\\n'),
+    'LOCATION:' + lieu,
+    'BEGIN:VALARM',
+    'TRIGGER:-PT30M',
+    'ACTION:DISPLAY',
+    'DESCRIPTION:' + titre,
+    'END:VALARM',
+    'END:VEVENT',
+    'END:VCALENDAR'
+  ].join('\r\n');
+
+  const uriIcs = 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics);
+
+  document.querySelectorAll('[data-agenda-google]').forEach(a => a.href = google);
+  document.querySelectorAll('[data-agenda-ics]').forEach(a => a.href = uriIcs);
+})();
+
+/* ---------- Découpe des petits labels en lettres ---------- */
+(function () {
+  if (mouvementReduit) return;
+  document.querySelectorAll('[data-lettres]').forEach(el => {
+    const texte = el.textContent;
+    el.textContent = '';
+    [...texte].forEach((c, i) => {
+      if (c === ' ') { el.appendChild(document.createTextNode(' ')); return; }
+      const s = document.createElement('span');
+      s.className = 'l';
+      s.textContent = c;
+      s.style.transitionDelay = (i * 34) + 'ms';
+      el.appendChild(s);
+    });
+  });
+})();
+
+/* ---------- Citation : révélation mot à mot ---------- */
+(function () {
+  if (mouvementReduit) return;
+  const citation = document.querySelector('.citation');
+  if (!citation) return;
+  let index = 0;
+  (function decouper(noeud) {
+    Array.from(noeud.childNodes).forEach(enfant => {
+      if (enfant.nodeType === Node.TEXT_NODE) {
+        const fragment = document.createDocumentFragment();
+        enfant.textContent.split(/(\s+)/).forEach(morceau => {
+          if (/^\s*$/.test(morceau)) {
+            fragment.appendChild(document.createTextNode(morceau));
+          } else {
+            const span = document.createElement('span');
+            span.className = 'mot-a-mot';
+            span.textContent = morceau;
+            span.style.transitionDelay = (index * 52) + 'ms';
+            index++;
+            fragment.appendChild(span);
+          }
+        });
+        noeud.replaceChild(fragment, enfant);
+      } else if (enfant.nodeType === Node.ELEMENT_NODE) {
+        decouper(enfant);
+      }
+    });
+  })(citation);
+})();
+
+/* ---------- Les particules ---------- */
+(function () {
+  if (mouvementReduit) return;
+  const ciel = $('poussieres');
+  for (let i = 0; i < 10; i++) {
+    const p = document.createElement('span');
+    p.className = 'poussiere';
+    p.style.left = (Math.random() * 100) + 'vw';
+    p.style.top = (55 + Math.random() * 45) + 'vh';
+    p.style.animationDuration = (16 + Math.random() * 16) + 's';
+    p.style.animationDelay = (-Math.random() * 20) + 's';
+    p.style.transform = 'scale(' + (0.6 + Math.random() * 0.8) + ')';
+    ciel.appendChild(p);
+  }
+})();
+
+/* ---------- Révélations au scroll ---------- */
+(function () {
+  const cibles = document.querySelectorAll('.reveal, .courbe, .etape, .titre-section, .pour-qui li, .note, .citation');
+
+  if (mouvementReduit || !('IntersectionObserver' in window)) {
+    cibles.forEach(el => el.classList.add('vu'));
+    return;
+  }
+
+  const observateur = new IntersectionObserver(entrees => {
+    entrees.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('vu');
+      observateur.unobserve(e.target);
+    });
+  }, { threshold: 0.16, rootMargin: '0px 0px -6% 0px' });
+
+  // Décalage en cascade entre voisins d'un même groupe
+  document.querySelectorAll('.pour-qui li, .deroule .etape').forEach((el, i) => {
+    el.style.transitionDelay = (i % 3 * 0.11) + 's';
+  });
+
+  cibles.forEach(el => observateur.observe(el));
+})();
+
+/* ---------- Onde au clic sur les boutons ---------- */
+document.querySelectorAll('.cta').forEach(btn => {
+  btn.addEventListener('click', e => {
+    if (mouvementReduit) return;
+    const r = btn.getBoundingClientRect();
+    const o = document.createElement('span');
+    o.className = 'ondulation';
+    o.style.left = (e.clientX - r.left) + 'px';
+    o.style.top = (e.clientY - r.top) + 'px';
+    btn.appendChild(o);
+    o.addEventListener('animationend', () => o.remove(), { once: true });
+  });
+});
+
+/* ---------- Boutons magnétiques et cartes qui s'inclinent (desktop) ---------- */
+(function () {
+  if (mouvementReduit || !pointeurFin) return;
+
+  document.querySelectorAll('[data-magnetique]').forEach(btn => {
+    btn.addEventListener('pointermove', e => {
+      const r = btn.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+      const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      btn.style.transform = 'translate(' + (dx * 9).toFixed(1) + 'px, ' + (dy * 6 - 2).toFixed(1) + 'px)';
+    });
+    btn.addEventListener('pointerleave', () => { btn.style.transform = ''; });
+  });
+
+  document.querySelectorAll('.inclinable').forEach(carte => {
+    carte.addEventListener('pointermove', e => {
+      const r = carte.getBoundingClientRect();
+      const dx = (e.clientX - (r.left + r.width / 2)) / r.width;
+      const dy = (e.clientY - (r.top + r.height / 2)) / r.height;
+      carte.style.transition = 'transform 0.18s ease-out';
+      carte.style.transform = 'perspective(1000px) rotateY(' + (dx * 3).toFixed(2) + 'deg) rotateX(' + (-dy * 2.4).toFixed(2) + 'deg)';
+    });
+    carte.addEventListener('pointerleave', () => {
+      carte.style.transition = '';
+      carte.style.transform = '';
+    });
+  });
+})();
+
+/* ---------- Le halo qui suit le curseur ---------- */
+(function () {
+  if (mouvementReduit || !pointeurFin) return;
+  const halo = $('halo-curseur');
+  let cibleX = window.innerWidth / 2, cibleY = window.innerHeight * 0.3;
+  let x = cibleX, y = cibleY, anime = false;
+
+  window.addEventListener('pointermove', e => {
+    cibleX = e.clientX; cibleY = e.clientY;
+    halo.classList.add('actif');
+    if (!anime) { anime = true; requestAnimationFrame(suivre); }
+  }, { passive: true });
+
+  function suivre() {
+    x += (cibleX - x) * 0.06;
+    y += (cibleY - y) * 0.06;
+    halo.style.transform = 'translate3d(' + x + 'px, ' + y + 'px, 0)';
+    if (Math.abs(cibleX - x) > 0.5 || Math.abs(cibleY - y) > 0.5) {
+      requestAnimationFrame(suivre);
+    } else {
+      anime = false;
+    }
+  }
+})();
+
+/* ---------- Boucle de scroll : jauge, fil, parallaxe, barre CTA ---------- */
+(function () {
+  const jauge = $('jauge');
+  const fil = $('fil');
+  const globe = $('souffle');
+  const page = document.querySelector('.page');
+  const barre = $('barre');
+  const hero = $('hero');
+  const carte = $('inscription');
+  let enAttente = false;
+
+  function dessiner() {
+    const y = window.scrollY;
+
+    if (!mouvementReduit) {
+      const total = document.documentElement.scrollHeight - window.innerHeight;
+      jauge.style.transform = 'scaleX(' + (total > 0 ? Math.min(1, y / total) : 0) + ')';
+
+      const debut = 470;
+      const fin = page.offsetHeight - 60;
+      const repere = y + window.innerHeight * 0.74 - page.offsetTop;
+      fil.style.height = Math.max(0, Math.min(repere - debut, fin - debut)) + 'px';
+
+      // Parallaxe : le globe descend moins vite que le texte
+      if (y < window.innerHeight * 1.3) {
+        globe.style.transform = 'translate(-50%, calc(-50% + ' + (y * 0.16).toFixed(1) + 'px))';
+      }
+    }
+
+    // La barre apparaît une fois le hero passé, et s'efface devant le formulaire
+    const heroFini = y > hero.offsetTop + hero.offsetHeight - 60;
+    const carteVisible = carte.getBoundingClientRect().top < window.innerHeight * 0.85;
+    barre.classList.toggle('montre', heroFini && !carteVisible);
+
+    enAttente = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (!enAttente) { enAttente = true; requestAnimationFrame(dessiner); }
+  }, { passive: true });
+  window.addEventListener('resize', dessiner);
+  dessiner();
+})();
+</script>
+</body>
+</html>
