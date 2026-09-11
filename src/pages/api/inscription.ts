@@ -1,29 +1,67 @@
 import type { APIRoute } from 'astro';
+import { setTimeout as attendre } from 'node:timers/promises';
 
 export const prerender = false;
 
 /*
  * Relais vers l'Apps Script « Live Leads and Business · Inscriptions ».
  *
- * Le navigateur poste ici, le serveur reposte au Sheet. Ça règle deux
- * choses par rapport à l'appel direct depuis la page :
- *  - l'échec d'écriture est enfin visible : Apps Script répond 200 même
- *    quand il plante, mais son corps contient alors une page d'erreur HTML
- *    au lieu du JSON attendu. On le détecte et on renvoie 502 au client,
- *    qui n'affiche pas la confirmation dans ce cas.
- *  - l'URL du webhook n'est plus dans le HTML public.
+ * Le navigateur poste ici ; le serveur valide, répond tout de suite, puis
+ * reposte au Sheet en arrière-plan. L'Apps Script met 2 s à répondre : on
+ * ne fait pas attendre le visiteur pour ça.
+ *
+ * En contrepartie, un échec d'écriture n'est plus visible du visiteur : il
+ * est rejoué trois fois (2 s, 8 s, 30 s) puis, s'il échoue encore, logué
+ * avec la charge complète dans les logs du conteneur (Coolify → Logs),
+ * pour ressaisie à la main. Apps Script répond 200 même quand il plante,
+ * avec une page HTML au lieu de `{"ok":true}` : on vérifie le JSON.
+ *
+ * Le processus Node reste vivant après la réponse (adaptateur standalone),
+ * les tâches de fond se terminent normalement.
  *
  * Étapes acceptées : visite, inscription, candidature_live.
  * Les clés envoyées au Sheet restent celles du script existant (profil,
  * business, blocage1, blocage2, blocage3, objectif, ca…) : le formulaire
- * a changé de questions, pas le tableur. Voir src/scripts/inscription.ts.
+ * a changé de questions, pas le tableur. Voir src/scripts/etat.ts.
  */
 
 const ETAPES: Record<string, true> = { visite: true, inscription: true, candidature_live: true };
 const WEBHOOK_URL = import.meta.env.WEBHOOK_URL ?? '';
+const DELAIS_MS = [0, 2000, 8000, 30000];
 
 const json = (body: unknown, status = 200) =>
 	new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
+
+async function posterAuSheet(donnees: Record<string, unknown>): Promise<string | null> {
+	const reponse = await fetch(WEBHOOK_URL, {
+		method: 'POST',
+		redirect: 'follow',
+		headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+		body: JSON.stringify(donnees),
+		signal: AbortSignal.timeout(20000)
+	});
+	const texte = await reponse.text();
+	let corps: { ok?: unknown } | null = null;
+	try {
+		corps = JSON.parse(texte);
+	} catch {}
+	if (!reponse.ok || !corps || corps.ok === false) return reponse.status + ' ' + texte.slice(0, 300);
+	return null;
+}
+
+async function relayerEnArrierePlan(donnees: Record<string, unknown>) {
+	for (let essai = 0; essai < DELAIS_MS.length; essai++) {
+		if (DELAIS_MS[essai]) await attendre(DELAIS_MS[essai]);
+		try {
+			const erreur = await posterAuSheet(donnees);
+			if (!erreur) return;
+			console.error(`[inscription] Apps Script a échoué (essai ${essai + 1}) :`, erreur);
+		} catch (err) {
+			console.error(`[inscription] Envoi échoué (essai ${essai + 1}) :`, err);
+		}
+	}
+	console.error('[inscription] PERDU après ' + DELAIS_MS.length + ' essais, à ressaisir :', JSON.stringify(donnees));
+}
 
 export const POST: APIRoute = async ({ request }) => {
 	let donnees: Record<string, unknown>;
@@ -51,27 +89,6 @@ export const POST: APIRoute = async ({ request }) => {
 		return json({ ok: true, simule: true });
 	}
 
-	try {
-		const reponse = await fetch(WEBHOOK_URL, {
-			method: 'POST',
-			redirect: 'follow',
-			headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-			body: JSON.stringify(donnees)
-		});
-		const texte = await reponse.text();
-		// En succès, le script répond `{"ok":true}` (application/json). En cas
-		// de plantage, Apps Script renvoie une page HTML avec un statut 200.
-		let corps: { ok?: unknown } | null = null;
-		try {
-			corps = JSON.parse(texte);
-		} catch {}
-		if (!reponse.ok || !corps || corps.ok === false) {
-			console.error('[inscription] Apps Script a échoué :', reponse.status, texte.slice(0, 300));
-			return json({ ok: false, erreur: 'Enregistrement impossible' }, 502);
-		}
-		return json({ ok: true });
-	} catch (err) {
-		console.error('[inscription] Envoi échoué :', err);
-		return json({ ok: false, erreur: 'Enregistrement impossible' }, 502);
-	}
+	void relayerEnArrierePlan(donnees);
+	return json({ ok: true });
 };
