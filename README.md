@@ -32,7 +32,7 @@ Sur Coolify, `WEBHOOK_URL` est définie dans les variables d'environnement de l'
 ## Ce que fait la page
 
 - **Compte à rebours** jours / heures / minutes / secondes dans le hero (`src/components/Countdown.astro`), passe en « En direct maintenant » à l'heure du live.
-- **Deux CTA** : « Proposer mon cas » et « Assister au live ». Chacun présélectionne le mode dans le formulaire et adapte le libellé du bouton.
+- **Deux CTA** : « Me faire coacher » et « Assister au live ». Chacun présélectionne le mode dans le formulaire et adapte le libellé du bouton.
 - **Formulaire en trois écrans** (`src/components/Inscription.astro`) : coordonnées + mode → candidature au coaching (si choisie) → confirmation avec le **groupe WhatsApp** en premier, puis l'agenda. Un échec d'enregistrement affiche une erreur et n'avance pas.
 - **Popup de sortie** (`src/components/ExitPopup.astro`) : sur ordinateur quand la souris quitte la fenêtre par le haut, sur mobile lors d'une remontée rapide après avoir lu un tiers de la page. Une fois par chargement de page, jamais après une inscription, jamais pendant la saisie d'un champ. Contient un mini-formulaire (prénom, e-mail, WhatsApp) qui enregistre une inscription « assister », puis propose le groupe WhatsApp.
 - **Relais serveur** `src/pages/api/inscription.ts` : reçoit les POST du navigateur, valide, reposte à l'Apps Script et ne renvoie `ok` que si le script a répondu `{"ok":true}`.

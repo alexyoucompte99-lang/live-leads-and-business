@@ -238,7 +238,7 @@ import WhatsAppCard from './WhatsAppCard.astro';
 	}
 	radios.forEach((r) => r.addEventListener('change', appliquerMode));
 
-	// Les CTA du hero présélectionnent le mode : « Proposer mon cas » vs « Assister ».
+	// Les CTA du hero présélectionnent le mode : « Me faire coacher » vs « Assister au live ».
 	document.querySelectorAll<HTMLAnchorElement>('[data-mode]').forEach((lien) => {
 		lien.addEventListener('click', () => {
 			const radio = document.querySelector<HTMLInputElement>('input[name="mode"][value="' + lien.dataset.mode + '"]');
