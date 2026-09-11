@@ -55,9 +55,17 @@ try {
 	if (sessionStorage.getItem('lnb-inscrit')) inscrit = true;
 } catch {}
 
-/** Envoie l'étape au Sheet via /api/inscription. Résout `true` si enregistré. */
-export async function envoyer(etape: 'inscription' | 'candidature_live'): Promise<boolean> {
+/**
+ * Envoie l'étape au Sheet via /api/inscription. Résout `true` si enregistré.
+ * L'Apps Script met 1,5 à 2,5 s à répondre : le bouton passe en état
+ * « Enregistrement… » pendant ce temps, pour que l'attente soit lisible.
+ */
+export async function envoyer(etape: 'inscription' | 'candidature_live', bouton: HTMLButtonElement): Promise<boolean> {
 	donnees.etape = etape;
+	const libelle = bouton.textContent;
+	bouton.disabled = true;
+	bouton.classList.add('charge');
+	bouton.textContent = 'Enregistrement…';
 	try {
 		const r = await fetch('/api/inscription', {
 			method: 'POST',
@@ -68,6 +76,10 @@ export async function envoyer(etape: 'inscription' | 'candidature_live'): Promis
 	} catch (err) {
 		console.error('Envoi échoué :', err);
 		return false;
+	} finally {
+		bouton.disabled = false;
+		bouton.classList.remove('charge');
+		bouton.textContent = libelle;
 	}
 }
 

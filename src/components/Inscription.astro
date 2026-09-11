@@ -278,9 +278,7 @@ import WhatsAppCard from './WhatsAppCard.astro';
 
 		const erreur = $('erreur-optin');
 		erreur.hidden = true;
-		btnOptin.disabled = true;
-		const enregistre = await envoyer('inscription');
-		btnOptin.disabled = false;
+		const enregistre = await envoyer('inscription', btnOptin);
 		if (!enregistre) {
 			erreur.hidden = false;
 			return;
@@ -329,9 +327,7 @@ import WhatsAppCard from './WhatsAppCard.astro';
 
 		const erreur = $('erreur-candidature');
 		erreur.hidden = true;
-		btnCandidature.disabled = true;
-		const enregistre = await envoyer('candidature_live');
-		btnCandidature.disabled = false;
+		const enregistre = await envoyer('candidature_live', btnCandidature);
 		if (!enregistre) {
 			erreur.hidden = false;
 			return;

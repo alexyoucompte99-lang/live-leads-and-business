@@ -217,9 +217,7 @@ import WhatsAppCard from './WhatsAppCard.astro';
 
 		const erreur = $('erreur-sortie');
 		erreur.hidden = true;
-		btn.disabled = true;
-		const enregistre = await envoyer('inscription');
-		btn.disabled = false;
+		const enregistre = await envoyer('inscription', btn);
 		if (!enregistre) {
 			erreur.hidden = false;
 			return;

@@ -1044,6 +1044,8 @@
 
   .bouton { display: block; width: 100%; text-align: center; margin-top: 28px; padding: 20px; }
   .bouton:disabled { opacity: 0.55; cursor: wait; }
+  .bouton.charge { opacity: 0.85; animation: respire 1.1s ease-in-out infinite; }
+  @keyframes respire { 50% { opacity: 0.5; } }
   a.bouton { margin-top: 0; }
 
   .flow-etape { display: none; }
