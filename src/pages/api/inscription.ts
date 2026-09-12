@@ -45,7 +45,7 @@ async function posterAuSheet(donnees: Record<string, unknown>): Promise<string |
 		redirect: 'follow',
 		headers: { 'Content-Type': 'text/plain;charset=utf-8' },
 		body: JSON.stringify(donnees),
-		signal: AbortSignal.timeout(30000)
+		signal: AbortSignal.timeout(60000)
 	});
 	const texte = await reponse.text();
 	let corps: { ok?: unknown } | null = null;
@@ -75,6 +75,13 @@ function relayerEnArrierePlan(donnees: Record<string, unknown>) {
 				if (!erreur) return;
 				console.error(`[inscription] Apps Script a échoué (essai ${essai + 1}) :`, erreur);
 			} catch (err) {
+				// Délai dépassé : la requête est partie et Apps Script écrit la ligne
+				// même quand sa réponse traîne (mesuré : 3 timeouts sur 3 = 3 lignes
+				// écrites). Rejouer ferait un doublon. On s'arrête et on le note.
+				if (err instanceof Error && err.name === 'TimeoutError') {
+					console.warn('[inscription] Délai dépassé, ligne très probablement écrite, pas de relance :', JSON.stringify(donnees));
+					return;
+				}
 				console.error(`[inscription] Envoi échoué (essai ${essai + 1}) :`, err);
 			}
 		}
