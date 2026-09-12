@@ -32,35 +32,58 @@ const DELAIS_MS = [0, 2000, 8000, 30000];
 const json = (body: unknown, status = 200) =>
 	new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
+/*
+ * Apps Script exécute doPost puis redirige (302) vers script.googleusercontent.com
+ * qui sert la réponse. Une fois redirigé, le script a tourné : si cette
+ * seconde page répond 404 (clé de lecture expirée, ça arrive), la ligne est
+ * quand même écrite. Rejouer dans ce cas créerait un doublon. On ne rejoue
+ * donc que sans redirection (erreur en amont) ou sur erreur réseau/timeout.
+ */
 async function posterAuSheet(donnees: Record<string, unknown>): Promise<string | null> {
 	const reponse = await fetch(WEBHOOK_URL, {
 		method: 'POST',
 		redirect: 'follow',
 		headers: { 'Content-Type': 'text/plain;charset=utf-8' },
 		body: JSON.stringify(donnees),
-		signal: AbortSignal.timeout(20000)
+		signal: AbortSignal.timeout(30000)
 	});
 	const texte = await reponse.text();
 	let corps: { ok?: unknown } | null = null;
 	try {
 		corps = JSON.parse(texte);
 	} catch {}
-	if (!reponse.ok || !corps || corps.ok === false) return reponse.status + ' ' + texte.slice(0, 300);
-	return null;
+	if (corps && corps.ok !== false) return null;
+	if (reponse.redirected && reponse.status === 404) return null;
+	return reponse.status + ' ' + texte.slice(0, 300);
 }
 
-async function relayerEnArrierePlan(donnees: Record<string, unknown>) {
-	for (let essai = 0; essai < DELAIS_MS.length; essai++) {
-		if (DELAIS_MS[essai]) await attendre(DELAIS_MS[essai]);
-		try {
-			const erreur = await posterAuSheet(donnees);
-			if (!erreur) return;
-			console.error(`[inscription] Apps Script a échoué (essai ${essai + 1}) :`, erreur);
-		} catch (err) {
-			console.error(`[inscription] Envoi échoué (essai ${essai + 1}) :`, err);
+/*
+ * Une file par e-mail : la candidature ne doit jamais atteindre le Sheet
+ * avant l'inscription (relance en cours sur la première pendant que la
+ * seconde part), sinon l'ordre des lignes ment.
+ */
+const files = new Map<string, Promise<void>>();
+
+function relayerEnArrierePlan(donnees: Record<string, unknown>) {
+	const cle = typeof donnees.email === 'string' ? donnees.email.toLowerCase() : '';
+	const precedent = files.get(cle) ?? Promise.resolve();
+	const suivant = precedent.then(async () => {
+		for (let essai = 0; essai < DELAIS_MS.length; essai++) {
+			if (DELAIS_MS[essai]) await attendre(DELAIS_MS[essai]);
+			try {
+				const erreur = await posterAuSheet(donnees);
+				if (!erreur) return;
+				console.error(`[inscription] Apps Script a échoué (essai ${essai + 1}) :`, erreur);
+			} catch (err) {
+				console.error(`[inscription] Envoi échoué (essai ${essai + 1}) :`, err);
+			}
 		}
-	}
-	console.error('[inscription] PERDU après ' + DELAIS_MS.length + ' essais, à ressaisir :', JSON.stringify(donnees));
+		console.error('[inscription] PERDU après ' + DELAIS_MS.length + ' essais, à ressaisir :', JSON.stringify(donnees));
+	});
+	files.set(cle, suivant);
+	void suivant.finally(() => {
+		if (files.get(cle) === suivant) files.delete(cle);
+	});
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -83,12 +106,15 @@ export const POST: APIRoute = async ({ request }) => {
 	}
 
 	donnees.horodateur = new Date().toISOString();
+	// Le Sheet interprète « +33… » comme une formule (#ERROR!) et « 06… »
+	// comme un nombre (zéro perdu). L'apostrophe force le texte, sans s'afficher.
+	if (typeof donnees.tel === 'string' && donnees.tel.trim() && !donnees.tel.startsWith("'")) donnees.tel = "'" + donnees.tel.trim();
 
 	if (!WEBHOOK_URL) {
 		console.warn('[inscription] WEBHOOK_URL absente, données non envoyées :', donnees);
 		return json({ ok: true, simule: true });
 	}
 
-	void relayerEnArrierePlan(donnees);
+	relayerEnArrierePlan(donnees);
 	return json({ ok: true });
 };
