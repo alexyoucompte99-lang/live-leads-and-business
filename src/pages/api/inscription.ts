@@ -10,14 +10,22 @@ export const prerender = false;
  * reposte au Sheet en arrière-plan. L'Apps Script met 2 s à répondre : on
  * ne fait pas attendre le visiteur pour ça.
  *
- * En contrepartie, un échec d'écriture n'est plus visible du visiteur : il
- * est rejoué trois fois (2 s, 8 s, 30 s) puis, s'il échoue encore, logué
- * avec la charge complète dans les logs du conteneur (Coolify → Logs),
- * pour ressaisie à la main. Apps Script répond 200 même quand il plante,
- * avec une page HTML au lieu de `{"ok":true}` : on vérifie le JSON.
+ * UNE LIGNE PAR PERSONNE. L'Apps Script ajoute une ligne à chaque appel, il
+ * ne met pas à jour. Pour qu'un candidat ne fasse pas deux lignes
+ * (inscription puis candidature), l'inscription en mode « coaching » est
+ * retenue ici jusqu'à l'arrivée de la candidature, qui part alors seule
+ * avec tous les champs. Si la candidature n'arrive pas dans les
+ * ATTENTE_CANDIDATURE_MS (20 min), l'inscription part telle quelle : le
+ * téléphone est enregistré quoi qu'il arrive. À l'arrêt du processus
+ * (redéploiement), tout ce qui est retenu part immédiatement.
+ * Une même étape pour un même e-mail n'est envoyée qu'une fois par vie du
+ * processus (double clic, retour en arrière, popup puis formulaire).
  *
- * Le processus Node reste vivant après la réponse (adaptateur standalone),
- * les tâches de fond se terminent normalement.
+ * Un échec d'écriture n'est pas visible du visiteur : il est rejoué
+ * (2 s, 8 s, 30 s) puis logué avec la charge complète dans les logs du
+ * conteneur (Coolify → Logs), pour ressaisie à la main. Apps Script répond
+ * 200 même quand il plante, avec une page HTML au lieu de `{"ok":true}` :
+ * on vérifie le JSON.
  *
  * Étapes acceptées : visite, inscription, candidature_live.
  * Les clés envoyées au Sheet restent celles du script existant (profil,
@@ -28,6 +36,7 @@ export const prerender = false;
 const ETAPES: Record<string, true> = { visite: true, inscription: true, candidature_live: true };
 const WEBHOOK_URL = import.meta.env.WEBHOOK_URL ?? '';
 const DELAIS_MS = [0, 2000, 8000, 30000];
+const ATTENTE_CANDIDATURE_MS = Number(import.meta.env.ATTENTE_CANDIDATURE_MS) || 20 * 60 * 1000;
 
 const json = (body: unknown, status = 200) =>
 	new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
@@ -93,6 +102,71 @@ function relayerEnArrierePlan(donnees: Record<string, unknown>) {
 	});
 }
 
+/* ---------- Une ligne par personne ---------- */
+
+/** Inscriptions « coaching » retenues en attendant la candidature. */
+const retenues = new Map<string, { donnees: Record<string, unknown>; minuteur: NodeJS.Timeout }>();
+/** Étapes déjà parties, clé « email|session|etape », pour ne jamais renvoyer la même. */
+const envoyees = new Set<string>();
+
+function cleDe(donnees: Record<string, unknown>) {
+	return String(donnees.email ?? '').toLowerCase() + '|' + String(donnees.session ?? '');
+}
+
+function expedier(donnees: Record<string, unknown>) {
+	const cle = cleDe(donnees) + '|' + String(donnees.etape);
+	if (envoyees.has(cle)) {
+		console.warn('[inscription] Déjà envoyée, ignorée :', cle);
+		return;
+	}
+	envoyees.add(cle);
+	relayerEnArrierePlan(donnees);
+}
+
+function liberer(cle: string) {
+	const retenue = retenues.get(cle);
+	if (!retenue) return;
+	clearTimeout(retenue.minuteur);
+	retenues.delete(cle);
+	expedier(retenue.donnees);
+}
+
+function router(donnees: Record<string, unknown>) {
+	if (donnees.etape === 'visite') {
+		relayerEnArrierePlan(donnees);
+		return;
+	}
+	const cle = cleDe(donnees);
+	if (donnees.etape === 'inscription' && donnees.mode === 'coaching') {
+		const deja = retenues.get(cle);
+		if (deja) clearTimeout(deja.minuteur);
+		retenues.set(cle, { donnees, minuteur: setTimeout(() => liberer(cle), ATTENTE_CANDIDATURE_MS) });
+		return;
+	}
+	if (donnees.etape === 'candidature_live') {
+		const retenue = retenues.get(cle);
+		if (retenue) {
+			clearTimeout(retenue.minuteur);
+			retenues.delete(cle);
+			envoyees.add(cle + '|inscription'); // absorbée par la candidature
+		}
+	}
+	expedier(donnees);
+}
+
+// Redéploiement : rien ne doit rester en mémoire.
+let arretPrevu = false;
+for (const signal of ['SIGTERM', 'SIGINT'] as const) {
+	process.once(signal, () => {
+		if (arretPrevu) return;
+		arretPrevu = true;
+		const cles = [...retenues.keys()];
+		if (cles.length) console.warn('[inscription] Arrêt : envoi immédiat de ' + cles.length + ' inscription(s) retenue(s).');
+		cles.forEach(liberer);
+		void Promise.allSettled([...files.values()]).then(() => process.exit(0));
+	});
+}
+
 export const POST: APIRoute = async ({ request }) => {
 	let donnees: Record<string, unknown>;
 	try {
@@ -122,6 +196,6 @@ export const POST: APIRoute = async ({ request }) => {
 		return json({ ok: true, simule: true });
 	}
 
-	relayerEnArrierePlan(donnees);
+	router(donnees);
 	return json({ ok: true });
 };
